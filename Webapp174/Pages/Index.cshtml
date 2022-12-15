@@ -1,0 +1,18 @@
+﻿@page
+@model Webapp174.ListOfImages
+
+<div class="container">
+    
+    <div class="row mt-2">
+        <h1> List of all stored NeuroImages </h1>
+        @foreach (var image in Model.GETImages)
+        {
+            <div class="col-4 mt-2">
+                <h3> @image.Name </h3>
+                <img src="~/@(image.WebFullName)" alt="neuroimage"/>
+                <p> Описание: @image.Description </p>
+            </div>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,44 @@
+﻿@page
+@model RazorPages.Pages.Account.LoginModel
+@{
+}
+
+
+@*Local Login*@
+<form method="post">
+
+    <a asp-page="/Identity/Register" asp-route-returnUrl=@Model.ReturnUrl>Register instead</a>
+
+    <div class="container">
+        <input type="hidden" value="@Model.ReturnUrl" asp-for="ReturnUrl" />
+
+        
+
+        <label asp-for="UserLoginPOST.Email" ><b>Email</b></label>
+        <input type="text" placeholder="Enter email" asp-for="UserLoginPOST.Email"> <br />
+        <span asp-validation-for="UserLoginPOST.Email" class="text-danger"></span>
+        <br /><br />
+
+        <label asp-for="UserLoginPOST.Password"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" asp-for="UserLoginPOST.Password"><br />
+        <span asp-validation-for="UserLoginPOST.Password" class="text-danger"></span>
+        <br /><br />
+
+        <label asp-for="UserLoginPOST.RememberMe"><b>Remember Me</b></label>
+        <input type="checkbox" asp-for="UserLoginPOST.RememberMe"> <br />
+        <br />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <button type="submit">Login</button>
+
+    </div>
+
+</form>
+
+
+@*External Login*@
+<form method="post" asp-page-handler="GoogleLogin">
+    <input type="hidden" value="@Model.ReturnUrl" asp-for="ReturnUrl" />
+    <button type="submit"> Зайти с аккаунтом Google </button>
+</form>

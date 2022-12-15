@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using RazorPages.Identity.Classes
+@using RazorPages.Models.Implementations
+@inject SignInManager<User> _signInManager;
+@inject MyHelper _helper;
+
+@if (_signInManager.IsSignedIn(User))
+{
+
+    var user = await _helper.GetCurrentUser()!;
+    string userDisplayName = user!.DisplayName;
+    int userCoinBalance = user.CoinBalance;
+    
+
+    <ul class="navbar-nav ms-auto">
+
+        <li  class="nav-item navbar-text text-success me-5">
+            <h5><strong><span id="coin-balance">
+                coins
+            </span></strong></h5>
+        </li>
+
+        <li class="nav-item text-dark">
+            <a class="nav-link" href="~/Account/User/@(user.UserName)/">@userDisplayName</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Account/Generate">Generate</a>
+        </li>
+
+        <li class="nav-item">
+
+            @*link that does nothing*@
+            <a class="nav-link" id="logout-link" href="#">Log out</a>
+
+            @*hidden button*@
+            <form method="post" asp-page="/Identity/Logout">
+                <button hidden type="submit" id="logout-button" class="nav-link" > Log out </button>
+            </form>
+        
+        </li>
+
+    </ul>
+
+} else {
+
+     <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Identity/Login">Login</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Identity/Register">Register</a>
+        </li>
+
+     </ul>
+}
+
+@*When logout link is clicked, click on hidden logout button*@
+<script type="text/javascript"> 
+    document.getElementById("logout-link").addEventListener('click', (e) => {
+        document.getElementById("logout-button").click();
+    });
+</script>
+
+
+@{
+    string getCoinBalanceActionUrl = Url.Action(
+                action: "GetCoinBalance",
+                controller: "Ajax"
+            )!;
+}
+
+@*Function for updating coin balance*@
+<script>
+
+    coin_balance_span = $("#coin-balance");
+    var coin_balance;
+
+    function UpdateCoinBalance() {
+        return $.ajax({
+            url: "@getCoinBalanceActionUrl",
+            method: "get",
+            success: result => {
+                console.log("balance updated");
+                coin_balance = result;
+                coin_balance_span.text(`${result} Coins`);
+            },
+            error: (result, textStatus) => {
+                console.log(textStatus);
+            }
+        });
+    }
+</script>

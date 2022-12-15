@@ -1,0 +1,54 @@
+﻿@page
+@model RazorPages.Pages.Account.RegisterModel
+@{
+}
+
+<form method="post">
+
+    <div class="container">
+        <input type="hidden" value="@Model.ReturnUrl" asp-for="ReturnUrl" />
+
+        <label asp-for="UserPOST.Email"><b>Email</b></label>
+        <input type="text" placeholder="Enter email" asp-for="UserPOST.Email">
+        <br />
+        <span asp-validation-for="UserPOST.Email" class="text-danger"></span>
+        <br /><br />
+
+        <label asp-for="UserPOST.DisplayName"><b>Name</b></label>
+        <input type="text" placeholder="Enter Name" asp-for="UserPOST.DisplayName" />
+        <br />
+        <span asp-validation-for="UserPOST.DisplayName" class="text-danger"></span>
+        <br /><br />
+
+        <label asp-for="UserPOST.Password"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" asp-for="UserPOST.Password">
+        <br />
+        <span asp-validation-for="UserPOST.Password" class="text-danger"></span>
+        <br /><br />
+
+        <label asp-for="UserPOST.ConfirmPassword"><b>Confirm Password</b></label>
+        <input type="password" placeholder="Enter Password" asp-for="UserPOST.ConfirmPassword">
+        <br />
+        <span asp-validation-for="UserPOST.ConfirmPassword" class="text-danger"></span>
+        <br /><br />
+
+        <label asp-for="UserPOST.RememberMe"><b>RememberMe</b></label>
+        <input type="checkbox" asp-for="UserPOST.RememberMe">
+        <br />
+
+        <button type="submit">Login</button>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    </div>
+
+
+</form>
+
+
+@*External Login*@
+<form method="post" asp-page="/Identity/Login" asp-page-handler="GoogleLogin">
+    <input type="hidden" value="@Model.ReturnUrl" asp-for="ReturnUrl" />
+    <button type="submit"> Зайти с аккаунтом Google </button>
+</form>
+
