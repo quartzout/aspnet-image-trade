@@ -7,13 +7,13 @@ using DataAccessLibrary.Classes;
 using DataAccessLibrary;
 using DataAccessLibrary.Classes.Options;
 using System.Linq.Expressions;
-using RazorPages.Models.Classes.AutoMapper;
+using Users.Models.Classes.AutoMapper;
 using System.Net;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using RazorPages.Models.Implementations;
+using Users.Models.Implementations;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
@@ -228,7 +228,7 @@ Properties on the other hand is what should be exposed to the outside world*/
 
 
 
-// В одном asp.net проекте можно совмещать MVC и Razor pages. Что будет использоваться зависит от того, присутствуют ли MVC и RazorPages серсвисы в DI
+// В одном asp.net проекте можно совмещать MVC и Razor pages. Что будет использоваться зависит от того, присутствуют ли MVC и Users серсвисы в DI
 // и соответствующие middleware в request pipeline, и как настроена маршрутизация.
 
 

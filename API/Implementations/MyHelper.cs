@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using System.Linq.Expressions;
 using System.Security.Claims;
 
-namespace RazorPages.Models.Implementations;
+namespace Users.Models.Implementations;
 
 /// <summary>
 /// Вспомогательный класс с разными полезными методами.

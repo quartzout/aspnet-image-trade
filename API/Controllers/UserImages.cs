@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
-using RazorPages.Identity.Classes;
-using RazorPages.Models.Implementations;
+using Users.Identity.Classes;
+using Users.Models.Implementations;
 using static DataAccessLibrary.Interfaces.INeuroImageStorage;
 
-namespace RazorPages.Controllers
+namespace Users.Controllers
 {
 
 	[Route("api/{controller}/{userName}")]

@@ -2,9 +2,9 @@
 using DataAccessLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using Mvc.Models;
-using RazorPages.Models.Implementations;
+using Users.Models.Implementations;
 
-namespace RazorPages.Models.Classes.AutoMapper;
+namespace Users.Models.Classes.AutoMapper;
 
 public class MyProfile : Profile
 {

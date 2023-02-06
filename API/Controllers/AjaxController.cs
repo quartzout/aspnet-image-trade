@@ -5,14 +5,14 @@ using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
-using RazorPages.Identity.Classes;
-using RazorPages.Models.Implementations;
+using Users.Identity.Classes;
+using Users.Models.Implementations;
 using Webapp174.Models.Interfaces;
 using static DataAccessLibrary.Classes.InfoStorage;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 
-namespace RazorPages.Controllers;
+namespace Users.Controllers;
 
 [Route("api/{controller}/{action}")]
 [ApiController]
