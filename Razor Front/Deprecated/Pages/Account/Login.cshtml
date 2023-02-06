@@ -1,0 +1,30 @@
+﻿@page
+@model RazorPages.Pages.Account.LoginModel
+@{
+}
+
+
+<form method="post">
+
+    <div class="container">
+        <input type="hidden" value="@Model.ReturnUrl" asp-for="ReturnUrl" />
+
+        <label asp-for="UserLoginPOST.Email" ><b>Email</b></label>
+        <input type="email" placeholder="Enter email" asp-for="UserLoginPOST.Email" required>
+
+        <label asp-for="UserLoginPOST.Password"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" asp-for="UserLoginPOST.Password" required>
+
+        <button type="submit">Login</button>
+
+        @*<label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+        </label>*@
+
+    </div>
+
+ @*   <div class="container" style="background-color:#f1f1f1">
+        <button type="button" class="cancelbtn">Cancel</button>
+        <span class="psw">Forgot <a href="#">password?</a></span>
+    </div>*@
+</form>
