@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EntityFrameworkUserStore\EntityFrameworkUserStore.csproj" />
+    <ProjectReference Include="..\EntityFrameworkUserStore\Users.csproj" />
   </ItemGroup>
 
 </Project>

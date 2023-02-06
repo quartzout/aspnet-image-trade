@@ -1,9 +1,12 @@
 ﻿namespace DataAccessLibrary.Models;
 
 #nullable disable
+/// <summary>
+/// Обертка над <see cref="NeuroImageInfo"/>, хранящая вместе с ним название файла.
+/// </summary>
 public class PathedNeuroImage
 {
-    //class instances are created manually, not with mapper
+    //Обьекты создаются вручную, без маппера, поэтому конструктор с аргументами
     public PathedNeuroImage(string filename, NeuroImageInfo info)
     {
         Filename = filename;

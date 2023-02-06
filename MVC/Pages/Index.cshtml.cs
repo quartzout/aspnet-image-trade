@@ -3,6 +3,7 @@ using AutoMapper;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Mvc.Models;
 using RazorPages.Models.Classes.UI;
 using RazorPages.Models.Implementations;
 using Webapp174.Models.Interfaces;
@@ -12,12 +13,12 @@ namespace Webapp174;
 
 public class ListOfImages : PageModel
 {
-    private readonly INeuroImageRepository _storage;
+    private readonly INeuroImageStorage _storage;
     private readonly MyHelper _helper;
     private readonly IMapper _mapper;
     private readonly IPictureGenerator _gen;
 
-    public ListOfImages(INeuroImageRepository storage, MyHelper helper, IMapper mapper, IPictureGenerator gen)
+    public ListOfImages(INeuroImageStorage storage, MyHelper helper, IMapper mapper, IPictureGenerator gen)
     {
         _storage = storage;
         _helper = helper;
@@ -25,11 +26,11 @@ public class ListOfImages : PageModel
         _gen = gen;
     }
 
-    public List<ImageModelGET> GETImages { get; set; } = new();
+    public List<ImageGetDto> GETImages { get; set; } = new();
 
     public async Task OnGet()
     {
-        var ImageResults = await _storage.GetAllOnSale();
+//        var ImageResults = await _storage.GetAllOnSale();
 
      /*   foreach (var imageResult in ImageResults)
         {

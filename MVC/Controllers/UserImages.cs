@@ -1,23 +1,17 @@
 ﻿using AutoMapper;
+using DapperImageStore.Models;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Mvc.Models;
 using RazorPages.Identity.Classes;
-using RazorPages.Models.Api;
 using RazorPages.Models.Implementations;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using static DataAccessLibrary.Interfaces.INeuroImageStorage;
 
 namespace RazorPages.Controllers
 {
-
-    public enum ImageType
-    {
-        InGallery,
-        InHeap,
-        OnSale
-    }
 
 	[Route("api/{controller}/{userName}")]
 	[ApiController]
@@ -29,9 +23,9 @@ namespace RazorPages.Controllers
 		readonly IMapper _mapper;
 		readonly UserManager<User> _userManager;
 		readonly MyHelper _helper;
-		readonly INeuroImageRepository _imageStore;
+		readonly INeuroImageStorage _imageStore;
 
-		public UserImagesController(IMapper mapper, UserManager<User> userManager, MyHelper helper, INeuroImageRepository imageStore)
+		public UserImagesController(IMapper mapper, UserManager<User> userManager, MyHelper helper, INeuroImageStorage imageStore)
 		{
 			_mapper = mapper;
 			_userManager = userManager;
@@ -40,73 +34,32 @@ namespace RazorPages.Controllers
 		}
 
 
-		// GET: api/UserImages/{imageType}
-		[HttpGet("{imageType=InGallery}")]
-		public async Task<IActionResult> GetAsync(ImageType imageType)
+		// GET: api/UserImages/{imageStatus}
+		// Получить все изображения пользователя. тип inHeap может получить только владелец изображений.
+		[HttpGet("{imageStatus=InGallery}")]
+		public async Task<IActionResult> GetAsync(ImageStatus imageStatus)
 		{
 
 			User owner = await _userManager.FindByNameAsync(UserName);
 			if (owner is null)
 				return NotFound("User not found");
 
-            if (imageType is ImageType.InHeap)
+
+            if (imageStatus is ImageStatus.InHeap)
 			{
 				User? currentUser = await _helper.GetCurrentUser();
 
 				if (currentUser is null || currentUser != owner)
 					return Unauthorized();
-
-				var results = await _imageStore.GetInHeapOfUser(owner.Id);
-				var dtos = _mapper.Map<IEnumerable<ImageGetDto>>(results);
-				var json = new JsonResult(dtos);
-
-                return Ok(json);
 			}
 
-			if (imageType == ImageType.OnSale)
-			{
-                var results = await _imageStore.GetOnSaleOfUser(owner.Id);
-                var dtos = _mapper.Map<IEnumerable<ImageGetDto>>(results);
-                var json = new JsonResult(dtos);
+			var results = _imageStore.GetAllOfUserOfStatus(owner.Id, imageStatus);
+            var dtos = _mapper.Map<IEnumerable<ImageGetDto>>(results);
+            var json = new JsonResult(dtos);
 
-                return Ok(json);
-            }
-			else 
-			{
-				var results = await _imageStore.GetInGalleryOfUser(owner.Id);
-				var dtos = _mapper.Map<IEnumerable<ImageGetDto>>(results);
-                var json = new JsonResult(dtos);
-
-                return Ok(json);
-			}
+            return Ok(json);
 
         }
 
-
-/*
-		// GET api/<UserImages>/5
-		[HttpGet("{id}")]
-		public string Get(int id)
-		{
-			return "value";
-		}
-
-		// POST api/<UserImages>
-		[HttpPost]
-		public void Post([FromBody] string value)
-		{
-		}
-
-		// PUT api/<UserImages>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
-		{
-		}
-
-		// DELETE api/<UserImages>/5
-		[HttpDelete("{id}")]
-		public void Delete(int id)
-		{
-		}*/
 	}
 }

@@ -3,6 +3,10 @@ using Webapp174.Models.Interfaces;
 
 namespace Webapp174.Models.Mocks;
 
+/// <summary>
+/// Мокает <see cref="IPictureGenerator"/>, копируя случайную из восьми имеющихся картинок в отведенную директорию.
+/// Класс настроек задает директорию, где хранятся картинки для выбора и директорию, куда копируются "сгенерированные" изображения
+/// </summary>
 public class PictureGeneratorMock : IPictureGenerator
 {
 	private const int NumberOfImages = 8;
@@ -15,16 +19,17 @@ public class PictureGeneratorMock : IPictureGenerator
 	
 	public string GeneratePicture()
 	{
-		//Pick an image
+		//Выбрать картинку
 		Random rnd = new Random();
 		int imageNumber = rnd.Next(1, NumberOfImages);
 		string filename = imageNumber + ".jpg";
 		string pickedImagePath = _options.Value.ImageStorageDirectory + filename;
 
-		//Copy to generated image directory
+		//Скопировать в директорию сгенерированных картинок
 		string generatedImagePath = _options.Value.GeneratedImageDirectory + filename;
 		File.Copy(pickedImagePath, generatedImagePath);
 
+		//вернуть полученный путь
 		return generatedImagePath;
 
     }

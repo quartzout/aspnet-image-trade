@@ -7,15 +7,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static DataAccessLibrary.Interfaces.IFileRepository;
+using static DataAccessLibrary.Interfaces.IFileStorage;
 
 namespace DataAccessLibrary.Classes
 {
-    public class FileRepository : IFileRepository
+    /// <summary>
+    /// Имплементация <see cref="IFileStorage"/>, хранящая изображения в файловой системе в директории, указанной в
+    /// <see cref="FileStorageOptions"/>. Названия файлов генерируются с помощью Guid.
+    /// </summary>
+    public class FileStorage : IFileStorage
     {
-        private readonly IOptions<FileRepositoryOptions> _options;
+        private readonly IOptions<FileStorageOptions> _options;
 
-        public FileRepository(IOptions<FileRepositoryOptions> options)
+        public FileStorage(IOptions<FileStorageOptions> options)
         {
             _options = options;
         }

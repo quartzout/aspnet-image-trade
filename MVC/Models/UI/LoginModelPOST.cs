@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace RazorPages.Models.Classes.UI;
 
 #nullable disable
+/// <summary>
+/// Модель, в которую биндятся данные с формы логина пользователя
+/// </summary>
 public class LoginModelPOST
 {
 

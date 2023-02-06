@@ -66,8 +66,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DapperImageStore\DapperImageStore.csproj" />
-      <ProjectReference Include="..\EntityFrameworkUserStore\EntityFrameworkUserStore.csproj" />
+      <ProjectReference Include="..\DapperImageStore\Images.csproj" />
+      <ProjectReference Include="..\EntityFrameworkUserStore\Users.csproj" />
     </ItemGroup>
 
     <ItemGroup>

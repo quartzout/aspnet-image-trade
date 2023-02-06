@@ -23,54 +23,41 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+//После создания builder с помощью него регестрируются сервисы для dependency injection
+//с помощью методов AddTransient, AddScoped и AddSingleton
+//AddTransient - при каждом новом требовании сервиса создается новый объект реализации
+//AddScoped - при каждом новом html-запросе создается новый объект реализации
+//AddSingleton - сервис создается единожды при первом запросе
 
 
-//PathedInfoRepository
-builder.Services.AddTransient<INeuroImageStoredInfoRepository, SqlNiStoredInfoRepository>();
-builder.Services.Configure<SqlNiStoredInfoRepositoryOptions>(
-	options => options.SqlDbConnectionString = builder.Configuration.GetConnectionString("ImagesSqlDb")
-	);
+//добавление сервисов для хранения изображений из проекта Images
+builder.Services.AddTransient<IInfoStorage, InfoStorage>();
+builder.Services.Configure<NeuroImageInfoStorageOptions>(
+	options => options.SqlDbConnectionString = builder.Configuration.GetConnectionString("ImagesSqlDb"));
 
-//NeuroImageRepository
-builder.Services.AddTransient<INeuroImageRepository, NeuroImageRepository>();
+builder.Services.AddTransient<INeuroImageStorage, NeuroImageStorage>();
 
-//FileRepository
-builder.Services.AddTransient<IFileRepository, FileRepository>();
-builder.Services.Configure<FileRepositoryOptions>(
+builder.Services.AddTransient<IFileStorage, FileStorage>();
+builder.Services.Configure<FileStorageOptions>(
     options => options.fileStorageAbsolutePath = builder.Environment.ContentRootPath + "wwwroot\\image-storage\\");
-
-
-
-//Identity
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<UserDbContext>()
-    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
-
-builder.Services.AddDbContext<UserDbContext>(opts => opts.UseSqlServer(
-    builder.Configuration.GetConnectionString("UsersSqlDb")));
-
-builder.Services.AddAuthentication()
-
-    // Добавляет схему для логина с гуглом. Никак не связан с Identity. CallbackPath по дефолту - /signIn-google, и если такой страницы
-    //не существует, этот middleware будет сам обрабатывать возвращенный с гугла редирект, содержащий информацию пользователя,
-    //и персистить эту информацию в SignInScheme (или в ту, которая установлена по дефолту). Из-за этого, когда используются мидлвейр 
-    //екстерного логина без Identity, с ним вместе еще добавляется схема, поддерживающую signIn (куки). Однако для того чтобы использовать
-    //екстерные логины вместе с Identity, необходимо создать страницу по адресу CallbackPath и прописать в ней signin или создание нового
-    //пользователя а потом signin с помощью userManager и signInManager. Это нужно для того, чтобы пользователь с помощью экстерного
-    //провайдера логинился в своего пользователя Identity, а не в рандомную куки-сессию с сохраненными там клеймами из гугла,
-    //как произошло бы если бы страницы под CallbackPath не было бы.
-    .AddGoogle(opts => {
-        opts.ClientId = "712280448300-tolfe38v9lk8uab5vi9qeddpuk3ua1ij.apps.googleusercontent.com";
-        opts.ClientSecret = "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";
-        opts.CallbackPath = "/Identity/Login/";
-    });
-
 
 
 //https://stackoverflow.com/questions/52492666/what-is-the-point-of-configuring-defaultscheme-and-defaultchallengescheme-on-asp
 
+//Добавление сервисов, предоставляемых Identity. Они являются оберткой над стандартным сервисом аутентификации и авторизации
+//и предоставляют методы по хранению и управлению пользователями и ролями. UserManager позволяет создавать и хранит пользователей,
+//SignInManager позволяет регистрироваться, входить и выходить из сессии, RoleManager позволяет задавать роли для авторизации.
+builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<UserDbContext>() //куда будут сохраняться пользователи
+    .AddDefaultTokenProviders();
 
-//Настройка SignInManager, LoginManager и RoleManager Identity
+//Класс контекста для Entity Framework
+builder.Services.AddDbContext<UserDbContext>(opts => opts.UseSqlServer(
+    builder.Configuration.GetConnectionString("UsersSqlDb")));
+
+
+
+//Настройка SignInManager, SignInManager и RoleManager 
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
@@ -94,7 +81,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
-//Настройка кук-схемы, использующейся Identity как дефолтная SignIn-схема
+
+//Настройка cookie-схемы, использующейся Identity как дефолтная SignIn-схема
 builder.Services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings
@@ -106,6 +94,25 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+
+builder.Services.AddAuthentication()
+
+    //Добавляет схему для логина с гуглом. Никак не связан с Identity. CallbackPath по дефолту - /signIn-google, и если такой страницы
+    //не существует, этот middleware будет сам обрабатывать возвращенный с гугла редирект, содержащий информацию пользователя,
+    //и персистить эту информацию в SignInScheme (или в ту, которая установлена по дефолту). Из-за этого, когда используются middleware 
+    //внешнего логина без Identity, с ним вместе еще добавляется схема, поддерживающую signIn (куки). Однако для того чтобы использовать
+    //екстерные логины вместе с Identity, необходимо создать страницу по адресу CallbackPath и прописать в ней signin или создание нового
+    //пользователя а потом signin с помощью userManager и signInManager. Это нужно для того, чтобы пользователь с помощью внешнего
+    //провайдера логинился в своего пользователя Identity, а не в рандомную куки-сессию с сохраненными там клеймами из гугла,
+    //как произошло бы если бы страницы под CallbackPath не было бы.
+    .AddGoogle(opts => {
+        opts.ClientId = "712280448300-tolfe38v9lk8uab5vi9qeddpuk3ua1ij.apps.googleusercontent.com";
+        opts.ClientSecret = "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";
+        opts.CallbackPath = "/Identity/Login/";
+    });
+
+
+
 //PictureGenerator
 builder.Services.AddTransient<IPictureGenerator, PictureGeneratorMock>();
 builder.Services.Configure<PictureGeneratorMockOptions>(options => {
@@ -116,58 +123,31 @@ builder.Services.Configure<PictureGeneratorMockOptions>(options => {
 builder.Services.AddTransient<MyHelper>();
 
 
-
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(MyProfile));
 
-#region Old Identity
-/*   
-// :)
-builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
-
-//LoginManager
-builder.Services.AddTransient<IdentityManager>();
 
 
-//Give HttpContext access to LoginManager
-builder.Services.AddHttpContextAccessor();
-//UsersDataAccess
-builder.Services.AddDbContext<UserDbContext>(opts =>
-    opts.UseSqlServer(builder.Configuration.GetConnectionString("UsersSqlDb")));
-
-
-
-//Auth
-builder.Services.AddAuthentication()
-	.AddCookie(authenticationScheme: CookieAuthenticationDefaults.AuthenticationScheme, opts =>
-	{
-		opts.LoginPath = "/Account/Login";
-		opts.Cookie.Name = "identity_cookie";
-		opts.ExpireTimeSpan = TimeSpan.FromHours(1);
-		opts.SlidingExpiration = true;
-	});
-
-*/
-#endregion
-
-
-//Создается builder, который нужен для четырех вещей: добавление сервисов в контейнер Dependency Injection (builder.Servises, возвращающий IServiceCollection),
-//добавление конфигруаций (builder.Configuration, возвращающий ConfigurationManager), настройка логирования (builder.Logging, возвращающий ILoggingBuilder),
-//и общая настройка IHostBuilder и IWebHostBuilder (builder.Host, возвращающий IHostBuilder и builder.WebHost, возвращающий IWebHostBuilder).
+//Кроме добавления сервисов (через builder.Add[Scope], возвращающий IServiceCollection) с помощью созданного builer можно
+//добавлять конфигруации (builder.Configuration, возвращающий ConfigurationManager),
+//настраивать логирование (builder.Logging, возвращающий ILoggingBuilder),
+//и настраивать IHostBuilder и IWebHostBuilder (builder.Host, возвращающий IHostBuilder и builder.WebHost, возвращающий IWebHostBuilder).
 //Как только все эти вещи сделаны, запускается builer.Build(), который собирает приложение.
 
 //https://habr.com/ru/post/594971/ - разница между .net5 и .net6 и описание WebApplication и WebApplicatiobBuilder.
 
-builder.Services.AddRazorPages(); //Добавляет в app все сервисы, необходимые
-                                  //для работы с Razor Pages. 
 
-builder.Services.AddControllers();
+//Добавляет в app все сервисы, необходимые для работы с Razor Pages. 
+builder.Services.AddRazorPages();
 
-//Добавляют связи между интерфейсами и реализующими их конкретными классам. Когда контроллеру понадобиться передать
-//реализацию интерфейсов, ему будет переданы именно эти реализации. AddSingleton, AddTransient и AddScoped делают одно и то же,
-//но с разными областями видимости. 
+//This method configures the MVC services for the commonly used features with controllers for an API. 
+//This combines the effects of AddMvcCore(IServiceCollection), AddApiExplorer(IMvcCoreBuilder), AddAuthorization(IMvcCoreBuilder),
+//AddCors(IMvcCoreBuilder), AddDataAnnotations(IMvcCoreBuilder), and AddFormatterMappings(IMvcCoreBuilder).
+//To add services for controllers with views call AddControllersWithViews(IServiceCollection) on the resulting builder.
+//To add services for pages call AddRazorPages(IServiceCollection) on the resulting builder.
+builder.Services.AddControllers(); 
 
-//Mock - обьект, используемый в тестировании, который имитирует поведение реального обьекта.
+
 
 var app = builder.Build();
 //Получение обьекта WebApplication. С помощью этого обьекта настраивается request pipeline - цепочка сервисов,
@@ -182,53 +162,53 @@ var app = builder.Build();
 //как отлов ошибкок, логирование и т.д.
 
 
-
-//Если название текущего Enviroment равно Development
+//В енве разработки ошибки 500 описываются подробно
 if (app.Environment.IsDevelopment()) {
 
-	app.UseDeveloperExceptionPage();  //При ошибке показывать в браузере ее детали
+	app.UseDeveloperExceptionPage();  
 	app.UseStatusCodePages();
 }
 
 app.UseStaticFiles();
-//Статические файлы - отправляются всем клиентам в неизменном виде, например, картинки и другие медиафайлы.
-//Могут быть закешированы в браузере клиента, чтобы упростить последующие загрузки сайта. По умолчанию хранятся в папке wwwroot.
-//Динамические файлы же формируются в момент запроса и зависят от параметров, например, генерируемые razerом страницы html.
-//Функция UseStaticFiles обьявляет, что мы используем статические файлы.
+//Статические файлы - отправляются всем клиентам в неизменном виде, например, картинки, медиафайлы, js, css.
+//Могут быть закешированы в браузере клиента, чтобы ускорить последующие загрузки сайта. По умолчанию хранятся в папке wwwroot.
+//Все остальное же формируется в момент запроса и зависит от параметров, например, генерируемые с помощью razer страницы html.
+//Такой динамический контент генерируется в эндпоинтах.
+//Отлов запроса на получение статического файла происходит до авторизации. 
+//https://learn.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-7.0#static-file-authorization
 
+//По адресу запроса и данным из предидущих сервисов определяет и назначает запросу эндпоинт, который будет исполнен в конце цепи.
 app.UseRouting();
 
-app.UseAuthentication();  //Не смотря на то, что это звучит контринтуитивно, UseAuthentication должен стоять после UseRouting,
-							//так как для логирования пользователя он использует какую-то информацию про ендпоинты из UseRouting
+//Пытается аутентифицировать пользователя. Заполняет у запроса данные User, либо устанавливает его как анонимного. 
+app.UseAuthentication();  
+
+//Определяет, достаточно ли у определенного в UseAuthentication пользователя прав (клеймы или роли) для того, чтобы пустить его
+//на назначенный эндпоинт   
 app.UseAuthorization();
 
+//Добавляет эндпоинты для созданных api-контроллеров
 app.MapControllers();
-/*app.MapControllerRoute(
-    name: "ajax",
-    pattern: "ajax/{controller}/{action}/");
-*/
+
+//Добавляет эндпоинты для созданных страниц razor.
 app.MapRazorPages();
 
-
-
+//Вызывает делегат (лямбда \ метод контроллера) назначенный в UseRouting, и замыкает цепь.
 app.UseEndpoints(_ => { });
 
 
+app.Run();
+//Когда middleware сервисы настроены, можно запускать приложение.
 
-//MVC работает по следующей схеме - каждый поступивший запрос указывает на какой то контроллер и какое-то действие (action) в этом контроллере.
-//Фреймворк вызывает это действие у этого контроллера, и в него передаются все необходимые контроллеру зависимости из контейнера DI. Действие обрабатывает
-//запрос, определяет, какой
-//
-//требуется отправить клиенту как ответ на запрос (и вообще, нужно ли отправлять View, либо же делать какое-то другое действие,
-//например переадресацию на другое действие или возвращение ошибки), генерирует обьект ViewModel для передачи нужному View, в котором содержится
-//вся информация, которую должен отобразить View, и возвращает сгенерированный View. Фреймворк MVC ловит возвращенный View и отправляет его клиенту как response.
+
+//MVC:
 
 //По стандарту, запросы для контроллеров размечены по следующей схеме:  https:\\<адрес сайта>\<имя контроллера>\<имя действия>\<индекс>
 //Индекс - необязательный параметр, передающийся в действие. Если он не указан, он будет равен Null. Если имя действия не указано, будет использовано
 //действие Index. Если имя контроллера не указано, будет использоваться Home. Из-за этого необходимо, чтобы в проекте по дефолту был контроллер Home с действием
-//Index. Изменять схему маршрутизации для запросов можно в финальном middleware - endpoints.
+//Index. Изменять схему маршрутизации для запросов можно в финальном middleware - UseEndpoints.
 
-//Действия контроллеров возвращат тип IActionResult, обобщающий все возможные типы данных, которые может возвратить действие в контроллере. 
+//Методы контроллеров возвращат тип IActionResult, обобщающий все возможные типы данных, которые может возвратить действие в контроллере. 
 //Среди них могут быть, например, ViewResult или RedirectToActionResult.
 
 //Контроллеры должны быть названы с припиской Controller на конце, например HomeController. Какой именно View возвратиться из действия, не указывается
@@ -242,17 +222,20 @@ So back to the main point: fields are supposed to be modified only from within t
 They should not be accessed directly from the outside. They represent and hold internal state of the class. 
 Properties on the other hand is what should be exposed to the outside world*/
 
-// Razor Pages - отличная от MVC система, позволяющая организовыввать razor-страницы и модели к ним проще. Razor Page представляет собой сразу же
+
+// Razor Pages:
+
+// Отличная от MVC система, позволяющая организовыввать razor-страницы и модели к ним проще. Razor Page представляет собой сразу же
 // и controller, и model и view, устраняя необходимость изменять код в нескольких разных файлах для изменения одной страницы, как это нужно в MVC.
 // Razor Page состоит из cshtml файла, такого же, как и в MVC, и класса, наследуюемого от PageModel, в котором прописываются одновременно свойства ViewModel 
 //и методы OnPost и OnGet, обрабатывающие запросы, подобно контроллерам. По дефолту обьявленные свойства могут задаваться в методах и читаться в файле cshtml.
 //Чтобы отправить информацию из cshtml в методы, необходимо выставить свостйтвам аттрибут BindProperties. В этом случае при отправке запроса дополнительные 
 //данные через ? будут биндиться к заданным своствам, и их смогут прочитать методы OnPost и OnGet.
 
+
+
 // В одном asp.net проекте можно совмещать MVC и Razor pages. Что будет использоваться зависит от того, присутствуют ли MVC и RazorPages серсвисы в DI
 // и соответствующие middleware в request pipeline, и как настроена маршрутизация.
 
-app.Run();
-//Когда middleware сервисы настроены, можно запускать приложение.
 
 

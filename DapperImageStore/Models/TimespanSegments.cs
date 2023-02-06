@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DapperImageStore.Models;
 
+/// <summary>
+/// Модель, являющаяся простой разверткой TimeSpan для отправки во фронтенд
+/// </summary>
 public class TimespanSegments
 {
     public TimespanSegments(TimeSpan timespan)

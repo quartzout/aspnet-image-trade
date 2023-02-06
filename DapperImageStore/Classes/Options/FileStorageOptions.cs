@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLibrary.Classes.Options;
 
-public class FileRepositoryOptions
+public class FileStorageOptions
 {
     public string fileStorageAbsolutePath { get; set; } = "C:\\Users\\Public\\Documents\\";
 }

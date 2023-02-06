@@ -3,11 +3,12 @@ using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Mvc.Models;
 using RazorPages.Identity.Classes;
 using RazorPages.Models.Classes.UI;
 using RazorPages.Models.Implementations;
 using Webapp174.Models.Interfaces;
-using static DataAccessLibrary.Classes.SqlNiStoredInfoRepository;
+using static DataAccessLibrary.Classes.InfoStorage;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 using JsonResult = Microsoft.AspNetCore.Mvc.JsonResult;
@@ -19,13 +20,13 @@ namespace RazorPages.Controllers;
 public class AjaxController : ControllerBase
 {
     private readonly IPictureGenerator _generator;
-    private readonly INeuroImageRepository _storage;
+    private readonly INeuroImageStorage _storage;
     private readonly MyHelper _helper;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
 
 
-    public AjaxController(IPictureGenerator generator, INeuroImageRepository storage, MyHelper helper, IMapper mapper, UserManager<User> userManager) : base()
+    public AjaxController(IPictureGenerator generator, INeuroImageStorage storage, MyHelper helper, IMapper mapper, UserManager<User> userManager) : base()
     {
         _generator = generator;
         _storage = storage;
@@ -35,6 +36,7 @@ public class AjaxController : ControllerBase
     }
 
     [HttpGet]
+    //Возвращает баланс монет текущего залогиненного пользователя
     public async Task<IActionResult> GetCoinBalance(int test)
     {
         var user = await _helper.GetCurrentUser();
@@ -46,6 +48,7 @@ public class AjaxController : ControllerBase
     }
 
     [HttpPost]
+    //Генерирует новое изображение со стандартными данными, сохраняет его в бд и возвращает
     public async Task<IActionResult> GenerateNewImage()
     {
 
@@ -70,31 +73,14 @@ public class AjaxController : ControllerBase
 
         var imageSaveResult = await _storage.StoreCopy(generatedPicturePath, newlyGeneratedInfo, deleteOriginal: true);
 
-        return new JsonResult(_mapper.Map<ImageModelGET>(imageSaveResult));
+        return new JsonResult(_mapper.Map<ImageGetDto>(imageSaveResult));
     }
 
-
-/*    [HttpGet]
-    public async Task<IActionResult> GetImagesInHeap()
-    {
-        var user = await _helper.GetCurrentUser();
-
-        if (user == null)
-            return Unauthorized();
-
-        var imageSaveResults = await _storage.GetInHeapOfUser(user.Id);
-
-        var result = new JsonResult(
-            _mapper.Map<IEnumerable<ImageModelGET>>(imageSaveResults)
-            .OrderBy(model => model.GeneratedAgo)
-        );
-
-        return result;
-    }
-*/
 
 
     [HttpPost]
+    //Сохраняет существующее бд необработанное (inHeap) изображение в галерею текущему пользователю, добавляя к его
+    //информации ту, что была передана телом post-запроса
     public async Task<IActionResult> SaveImageToGallery([FromBody] ImageInfoModelPOST imageInfo)
     {
         var user = await _helper.GetCurrentUserId();
@@ -124,6 +110,8 @@ public class AjaxController : ControllerBase
         if (info.IsInGallery)
             return BadRequest("Specified image is already in gallery");
 
+        //Маппинг из ImageInfoModelPOST в NeuroImageInfo происходит вручную, однако можно вместо этого обьявить мап 
+        //из первой модели в последнюю и как-то настроить его так, чтобы он мог совмещать две NeuroImageInfo в одну
         info.Name = imageInfo.Name;
         info.Description = imageInfo.Description;
         info.IsInGallery = true;

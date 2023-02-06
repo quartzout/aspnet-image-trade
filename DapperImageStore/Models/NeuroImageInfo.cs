@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 namespace DataAccessLibrary.Models;
 
 #nullable disable
+/// <summary>
+/// Модель, описывающая изображение. Не содержит путь к файлу или id изображения в бд, имеет только связанные с ним характеристики
+/// </summary>
 public class NeuroImageInfo
 {
     public string? Name { get; set; }

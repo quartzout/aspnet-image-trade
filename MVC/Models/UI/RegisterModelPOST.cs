@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RazorPages.Models.Classes.UI;
 
+/// <summary>
+/// Модель, в которую биндятся данные с формы регистрации пользователя
+/// </summary>
 #nullable disable
 public class RegisterModelPOST
 {

@@ -7,7 +7,11 @@ using DataAccessLibrary.Models;
 
 namespace DataAccessLibrary.Interfaces;
 
-public interface IFileRepository
+/// <summary>
+/// Интерфейс, хранящий файлы изображений. Ключами являются имена файлов (не пути). 
+/// Get-методы возвращают <see cref="FileResult"/>
+/// </summary>
+public interface IFileStorage
 {
     public FileResult StoreCopy(string copyFrom, bool deleteOriginal = false);
 
