@@ -10,7 +10,7 @@ using System.Data.SqlTypes;
 // класс DbContext для доступа к бд через EF и запустить необходимые миграции через консоль пакетов.
 
 
-namespace RazorPages.Identity.Classes;
+namespace Users.Identity.Classes;
 
 /// <summary>
 /// Пользователь. Наследует базового пользователя из Identity

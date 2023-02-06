@@ -1,7 +1,7 @@
 ﻿
 using DapperImageStore.Models;
 using DataAccessLibrary.Models;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

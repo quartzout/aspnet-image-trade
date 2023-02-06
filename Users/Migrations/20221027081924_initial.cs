@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RazorPages.Migrations
+namespace Users.Migrations
 {
     public partial class initial : Migration
     {

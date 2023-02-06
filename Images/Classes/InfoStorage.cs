@@ -14,7 +14,7 @@ using System.Data;
 using static DataAccessLibrary.Interfaces.IInfoStorage;
 using AutoMapper;
 using DataAccessLibrary.Models;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using System.Dynamic;
 using DapperImageStore.Models;
 

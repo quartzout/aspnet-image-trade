@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 
 public class UserDbContext : IdentityDbContext<User>
 {

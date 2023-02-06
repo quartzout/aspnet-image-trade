@@ -8,7 +8,7 @@ using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using static DataAccessLibrary.Interfaces.IInfoStorage;
 using DataAccessLibrary.Models;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using DapperImageStore.Models;
 
 namespace DataAccessLibrary.Interfaces;

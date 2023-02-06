@@ -15,7 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 using static DataAccessLibrary.Interfaces.INeuroImageStorage;
 using DataAccessLibrary.Models;
 using static DataAccessLibrary.Interfaces.IInfoStorage;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using DapperImageStore.Models;
 
 namespace DataAccessLibrary;

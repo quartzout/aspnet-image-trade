@@ -6,7 +6,7 @@ using RazorPages.Models.Classes.UI;
 using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using RazorPages.Identity.Classes;
+using Users.Identity.Classes;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using Microsoft.AspNetCore.Authentication.Google;
 
