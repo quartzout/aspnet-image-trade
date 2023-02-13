@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+﻿using API.Models;
+using AutoMapper;
 using DataAccessLibrary.Models;
 using Microsoft.Extensions.Configuration;
 using Mvc.Models;
-using Users.Models.Implementations;
+using Users.Identity.Classes;
 
 namespace Users.Models.Classes.AutoMapper;
 
@@ -30,6 +31,9 @@ public class MyProfile : Profile
         CreateMap<NeuroImageInfo, ImageGetDto>();
         CreateMap<NeuroImageResult, ImageGetDto>()
             .IncludeMembers(src => src.Info);
+
+        //Пользователь в модель, отправляемую по запросу api
+        CreateMap<User, UserGetDto>();
 
     }
 
