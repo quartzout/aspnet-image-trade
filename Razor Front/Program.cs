@@ -13,14 +13,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using RazorPages.Models.Implementations;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using RazorPages.Identity.Classes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using AutoMapper;
-using System.Web.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Users.Identity.Classes;
 
 var builder = WebApplication.CreateBuilder(args);
 //После создания builder с помощью него регестрируются сервисы для dependency injection
@@ -72,7 +71,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
-    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
     
 
     // User settings.

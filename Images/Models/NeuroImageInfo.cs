@@ -15,8 +15,8 @@ namespace DataAccessLibrary.Models;
 /// </summary>
 public class NeuroImageInfo
 {
-    public string? Name { get; set; }
-    public string? Description { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
     public bool IsInGallery { get; set; }
     public DateTime GenerationDate { get; set; }
     public int? SortingImportance { get; set; }

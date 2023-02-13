@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Users.Migrations
 {
+#pragma warning disable CS8981 // Имя типа содержит только строчные символы ASCII. Такие имена могут резервироваться для языка.
     public partial class update : Migration
+#pragma warning restore CS8981 // Имя типа содержит только строчные символы ASCII. Такие имена могут резервироваться для языка.
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

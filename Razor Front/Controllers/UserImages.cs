@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
-using RazorPages.Identity.Classes;
 using RazorPages.Models.Implementations;
+using Users.Identity.Classes;
 using static DataAccessLibrary.Interfaces.INeuroImageStorage;
 
 namespace RazorPages.Controllers

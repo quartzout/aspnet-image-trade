@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorPages.Models.Classes.UI;
 using Microsoft.AspNetCore.Identity;
-using RazorPages.Identity.Classes;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Web;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Users.Identity.Classes;
 
 namespace RazorPages.Pages.Account
 {

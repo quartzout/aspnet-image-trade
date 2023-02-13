@@ -12,7 +12,9 @@ namespace Users.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     [Migration("20221027091721_update")]
+#pragma warning disable CS8981 // Имя типа содержит только строчные символы ASCII. Такие имена могут резервироваться для языка.
     partial class update
+#pragma warning restore CS8981 // Имя типа содержит только строчные символы ASCII. Такие имена могут резервироваться для языка.
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

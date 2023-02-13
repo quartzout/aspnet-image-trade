@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using RazorPages.Identity.Classes;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using Users.Identity.Classes;
 
 namespace RazorPages.Models.Implementations;
 

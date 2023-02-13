@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using RazorPages.Identity.Classes;
 using System.Web;
+using Users.Identity.Classes;
 
 namespace RazorPages.Pages.Identity
 {

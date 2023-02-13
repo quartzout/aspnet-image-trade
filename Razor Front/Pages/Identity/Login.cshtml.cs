@@ -87,7 +87,7 @@ namespace RazorPages.Pages.Account
         }
 
 
-        public async Task<IActionResult> OnGetExternalLoginAsync(string? remoteError = null)
+        public async Task<IActionResult> OnGetExternalLoginAsync(string remoteError = null)
         { 
 
             if (remoteError != null)

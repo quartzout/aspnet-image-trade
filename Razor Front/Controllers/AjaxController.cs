@@ -4,9 +4,9 @@ using DataAccessLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
-using RazorPages.Identity.Classes;
 using RazorPages.Models.Classes.UI;
 using RazorPages.Models.Implementations;
+using Users.Identity.Classes;
 using Webapp174.Models.Interfaces;
 using static DataAccessLibrary.Classes.InfoStorage;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
@@ -36,11 +36,11 @@ public class AjaxController : ControllerBase
 
     [HttpGet]
     //Возвращает баланс монет текущего залогиненного пользователя
-    public async Task<IActionResult> GetCoinBalance(int test)
+    public async Task<IActionResult> GetCoinBalance()
     {
         var user = await _helper.GetCurrentUser();
 
-        if (user == null)
+        if (user is null)
             return Unauthorized();
 
         return Ok(user.CoinBalance);

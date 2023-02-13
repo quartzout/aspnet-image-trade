@@ -12,6 +12,7 @@ using System.Data.SqlTypes;
 
 namespace Users.Identity.Classes;
 
+#nullable disable
 /// <summary>
 /// Пользователь. Наследует базового пользователя из Identity
 /// </summary>
