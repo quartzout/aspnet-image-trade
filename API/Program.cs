@@ -10,7 +10,6 @@ using System.Linq.Expressions;
 using Users.Models.Classes.AutoMapper;
 using System.Net;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Users.Models.Implementations;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Users.Identity.Classes;
@@ -18,9 +17,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using AutoMapper;
-using System.Web.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using API.Interfaces;
+using API.Implementations;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 //После создания builder с помощью него регестрируются сервисы для dependency injection
@@ -33,7 +38,7 @@ var builder = WebApplication.CreateBuilder(args);
 //добавление сервисов для хранения изображений из проекта Images
 builder.Services.AddTransient<IInfoStorage, InfoStorage>();
 builder.Services.Configure<NeuroImageInfoStorageOptions>(
-	options => options.SqlDbConnectionString = builder.Configuration.GetConnectionString("ImagesSqlDb"));
+	options => options.SqlDbConnectionString = builder.Configuration.GetConnectionString("ImagesSqlDb") ?? "");
 
 builder.Services.AddTransient<INeuroImageStorage, NeuroImageStorage>();
 
@@ -47,7 +52,7 @@ builder.Services.Configure<FileStorageOptions>(
 //Добавление сервисов, предоставляемых Identity. Они являются оберткой над стандартным сервисом аутентификации и авторизации
 //и предоставляют методы по хранению и управлению пользователями и ролями. UserManager позволяет создавать и хранит пользователей,
 //SignInManager позволяет регистрироваться, входить и выходить из сессии, RoleManager позволяет задавать роли для авторизации.
-builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<UserDbContext>() //куда будут сохраняться пользователи
     .AddDefaultTokenProviders();
 
@@ -56,8 +61,7 @@ builder.Services.AddDbContext<UserDbContext>(opts => opts.UseSqlServer(
     builder.Configuration.GetConnectionString("UsersSqlDb")));
 
 
-
-//Настройка SignInManager, SignInManager и RoleManager 
+//Настройка Identity
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Password settings.
@@ -72,7 +76,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
-    options.SignIn.RequireConfirmedEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
     
 
     // User settings.
@@ -81,6 +86,31 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
+
+var jwtOptions = new JwtOptions();
+builder.Configuration.Bind(JwtOptions.SectionName, jwtOptions);
+builder.Services.AddSingleton(Options.Create(jwtOptions));
+
+builder.Services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
+
+var tokenValidationParameters = new TokenValidationParameters()
+{
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+    ValidIssuer = jwtOptions.Issuer,
+    
+    ValidateIssuerSigningKey = true,
+    ValidateIssuer = true,
+    
+    ValidAudience = jwtOptions.Audience,
+    ValidateAudience = true,
+    
+    ValidateLifetime = true
+};
+
+builder.Services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.AuthenticationScheme)
+
+.AddJwtBearer(options => options.TokenValidationParameters = tokenValidationParameters)
+.AddCookie();
 
 //Настройка cookie-схемы, использующейся Identity как дефолтная SignIn-схема
 builder.Services.ConfigureApplicationCookie(options =>
@@ -95,21 +125,21 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 
-builder.Services.AddAuthentication()
 
-    //Добавляет схему для логина с гуглом. Никак не связан с Identity. CallbackPath по дефолту - /signIn-google, и если такой страницы
-    //не существует, этот middleware будет сам обрабатывать возвращенный с гугла редирект, содержащий информацию пользователя,
-    //и персистить эту информацию в SignInScheme (или в ту, которая установлена по дефолту). Из-за этого, когда используются middleware 
-    //внешнего логина без Identity, с ним вместе еще добавляется схема, поддерживающую signIn (куки). Однако для того чтобы использовать
-    //екстерные логины вместе с Identity, необходимо создать страницу по адресу CallbackPath и прописать в ней signin или создание нового
-    //пользователя а потом signin с помощью userManager и signInManager. Это нужно для того, чтобы пользователь с помощью внешнего
-    //провайдера логинился в своего пользователя Identity, а не в рандомную куки-сессию с сохраненными там клеймами из гугла,
-    //как произошло бы если бы страницы под CallbackPath не было бы.
-    .AddGoogle(opts => {
-        opts.ClientId = "712280448300-tolfe38v9lk8uab5vi9qeddpuk3ua1ij.apps.googleusercontent.com";
-        opts.ClientSecret = "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";
-        opts.CallbackPath = "/Identity/Login/";
-    });
+
+//Добавляет схему для логина с гуглом. Никак не связан с Identity. CallbackPath по дефолту - /signIn-google, и если такой страницы
+//не существует, этот middleware будет сам обрабатывать возвращенный с гугла редирект, содержащий информацию пользователя,
+//и персистить эту информацию в SignInScheme (или в ту, которая установлена по дефолту). Из-за этого, когда используются middleware 
+//внешнего логина без Identity, с ним вместе еще добавляется схема, поддерживающую signIn (куки). Однако для того чтобы использовать
+//екстерные логины вместе с Identity, необходимо создать страницу по адресу CallbackPath и прописать в ней signin или создание нового
+//пользователя а потом signin с помощью userManager и signInManager. Это нужно для того, чтобы пользователь с помощью внешнего
+//провайдера логинился в своего пользователя Identity, а не в рандомную куки-сессию с сохраненными там клеймами из гугла,
+//как произошло бы если бы страницы под CallbackPath не было бы.
+/*builder.Services.AddAuthentication().AddGoogle(opts => {
+    opts.ClientId = "712280448300-tolfe38v9lk8uab5vi9qeddpuk3ua1ij.apps.googleusercontent.com";
+    opts.ClientSecret = "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";
+    opts.CallbackPath = "/Identity/Login/";
+});*/
 
 
 
@@ -118,9 +148,6 @@ builder.Services.AddTransient<IPictureGenerator, PictureGeneratorMock>();
 builder.Services.Configure<PictureGeneratorMockOptions>(options => {
 	options.ImageStorageDirectory = builder.Environment.ContentRootPath + "Generator Images\\imgs\\";
     options.GeneratedImageDirectory = builder.Environment.ContentRootPath + "Generator Images\\Generated Images\\";});
-
-//MyHelper
-builder.Services.AddTransient<MyHelper>();
 
 
 //AutoMapper
@@ -142,8 +169,19 @@ builder.Services.AddAutoMapper(typeof(MyProfile));
 //AddCors(IMvcCoreBuilder), AddDataAnnotations(IMvcCoreBuilder), and AddFormatterMappings(IMvcCoreBuilder).
 //To add services for controllers with views call AddControllersWithViews(IServiceCollection) on the resulting builder.
 //To add services for pages call AddRazorPages(IServiceCollection) on the resulting builder.
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();
 
+var corsPolicyName = "corsPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: corsPolicyName,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000");
+            policy.WithHeaders("*");
+            policy.AllowCredentials();
+        });
+});
 
 
 var app = builder.Build();
@@ -174,11 +212,17 @@ app.UseStaticFiles();
 //Отлов запроса на получение статического файла происходит до авторизации. 
 //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-7.0#static-file-authorization
 
+
+
 //По адресу запроса и данным из предидущих сервисов определяет и назначает запросу эндпоинт, который будет исполнен в конце цепи.
 app.UseRouting();
 
+/*//разрашем cors запросы
+app.UseCors(corsPolicyName);
+*/
+
 //Пытается аутентифицировать пользователя. Заполняет у запроса данные User, либо устанавливает его как анонимного. 
-app.UseAuthentication();  
+app.UseAuthentication();
 
 //Определяет, достаточно ли у определенного в UseAuthentication пользователя прав (клеймы или роли) для того, чтобы пустить его
 //на назначенный эндпоинт   
@@ -189,7 +233,6 @@ app.MapControllers();
 
 //Вызывает делегат (лямбда \ метод контроллера) назначенный в UseRouting, и замыкает цепь.
 app.UseEndpoints(_ => { });
-
 
 app.Run();
 //Когда middleware сервисы настроены, можно запускать приложение.
