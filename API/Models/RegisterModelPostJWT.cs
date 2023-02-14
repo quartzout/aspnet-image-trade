@@ -7,7 +7,7 @@ namespace API.Models;
 /// Модель, в которую биндятся данные с формы регистрации пользователя
 /// </summary>
 #nullable disable
-public class RegisterModelPOSTJWT
+public class RegisterModelPostJWT
 {
     [DisplayName("Email")]
     [Required]
