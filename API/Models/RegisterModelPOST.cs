@@ -25,11 +25,5 @@ public class RegisterModelPOST
     [StringLength(maximumLength: 100, MinimumLength = 8, ErrorMessage = "Password should take at least 8 characters")]
     public string Password { get; set; }
 
-    [DisplayName("Confirm Password")]
-    [Required]
-    [DataType(DataType.Password)]
-    [Compare(nameof(Password))]
-    public string ConfirmPassword { get; set; }
-
     public bool RememberMe { get; set; }
 }
