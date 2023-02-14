@@ -86,13 +86,19 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 });
 
-
+//Создание класса опций токена и регистрация его в контейнере DI. Так как опции потребуются не только в сервисе генерации токена,
+//но и в этом же файле для настройки добавляемой jwt-схемы аутентификации, мы не можем использовать builder.Services.Configure (т.к. этот метод не возвращет
+//полученного объекта конфигурации а сразу же добавляет его в DI). Вместо этого мы создаем класс вручную, биндим его с конфигурацией, и добавляем как
+//сервис.
 var jwtOptions = new JwtOptions();
 builder.Configuration.Bind(JwtOptions.SectionName, jwtOptions);
-builder.Services.AddSingleton(Options.Create(jwtOptions));
+builder.Services.AddSingleton(Options.Create(jwtOptions)); //Нам нужно обернуть полученный обьект конфигураций в интерфейс IOptions, чтобы требующие его сервисы
+//зависили от интерфейса, а не от конкретного класса. Также, используется именно метод AddSingleton, ведь реалтайм обьект единожды создался вручную и не 
+//может пересоздаваться при новых запросах.
 
 builder.Services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
 
+//Параметры jwt-схемы аутентификации 
 var tokenValidationParameters = new TokenValidationParameters()
 {
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
@@ -107,20 +113,18 @@ var tokenValidationParameters = new TokenValidationParameters()
     ValidateLifetime = true
 };
 
+//Добавление двух схем аутентификации - Cookie для AccountController и jwt для JwtAccountController.
 builder.Services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.AuthenticationScheme)
-
 .AddJwtBearer(options => options.TokenValidationParameters = tokenValidationParameters)
 .AddCookie();
 
 //Настройка cookie-схемы, использующейся Identity как дефолтная SignIn-схема
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    // Cookie settings
     options.Cookie.HttpOnly = true;
     options.ExpireTimeSpan = TimeSpan.FromDays(1);
+    options.Cookie.SameSite = SameSiteMode.None;
 
-    options.LoginPath = "/Identity/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.SlidingExpiration = true;
 });
 
@@ -171,12 +175,15 @@ builder.Services.AddAutoMapper(typeof(MyProfile));
 //To add services for pages call AddRazorPages(IServiceCollection) on the resulting builder.
 builder.Services.AddControllers();
 
+
+//Cors-политика, используемая cors-middeware для разрешение cors-запросов
 var corsPolicyName = "corsPolicy";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: corsPolicyName,
         policy =>
         {
+            //Эти опции соответствуют хедерам, отправляемым сервером вместе с response
             policy.WithOrigins("http://localhost:3000");
             policy.WithHeaders("*");
             policy.AllowCredentials();
@@ -217,9 +224,8 @@ app.UseStaticFiles();
 //По адресу запроса и данным из предидущих сервисов определяет и назначает запросу эндпоинт, который будет исполнен в конце цепи.
 app.UseRouting();
 
-/*//разрашем cors запросы
+//разрашем cors запросы
 app.UseCors(corsPolicyName);
-*/
 
 //Пытается аутентифицировать пользователя. Заполняет у запроса данные User, либо устанавливает его как анонимного. 
 app.UseAuthentication();

@@ -8,6 +8,9 @@ using Users.Identity.Classes;
 
 namespace API.Implementations;
 
+/// <summary>
+/// Реализация <see cref="IJwtTokenGenerator"/>. Берет данные для JWT из <see cref="JwtOptions"/>
+/// </summary>
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
 
@@ -18,17 +21,21 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         this.jwtOptions = jwtOptions;
     }
 
-    public string GenerateToken(string userId)
+    public string GenerateToken(string email)
     {
+        //Шифровка ключа, известного только серверу (по нему он определяет валидность пришедшего из запроса токена)
         var signingCredentials = new SigningCredentials(
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.Key)),
         SecurityAlgorithms.HmacSha256
     );
 
+        //Набор клеймов, сохраняемых в токене. После аутентификации запроса по этому токену эти клеймы будут
+        //записаны в HttpContext.User. Эти клемы никак не связаны и не взаимодействуют с Identity.
         var claims = new Claim[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, userId),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Sub, email), //Субьект клеймов (пользователь) 
+            new Claim(JwtRegisteredClaimNames.Email, email), //Кастомный клейм, по которому будет искаться пользователь в бд через UserManager
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //GUID токена. Уникальный для каждого токена
         };
 
         var token = new JwtSecurityToken(
@@ -38,6 +45,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             claims: claims,
             signingCredentials: signingCredentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(token); //Возвращает выстроенный токен как строку
     }
 }

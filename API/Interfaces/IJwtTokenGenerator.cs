@@ -3,10 +3,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace API.Interfaces
+namespace API.Interfaces;
+
+/// <summary>
+/// Интерфейс, позволяющий генерировать JWT-токен с Email как идентифицирующий пользователя клейм.
+/// </summary>
+public interface IJwtTokenGenerator
 {
-    public interface IJwtTokenGenerator
-    {
-        string GenerateToken(string userId);
-    }
+    /// <summary>
+    /// Генерирует JWT-токен с Email как идентифицирующий пользователя клейм.
+    /// </summary>
+    string GenerateToken(string email);
 }
