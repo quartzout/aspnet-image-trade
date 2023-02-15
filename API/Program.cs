@@ -1,5 +1,3 @@
-using Webapp174.Models.Interfaces;
-using Webapp174.Models.Mocks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLibrary.Interfaces;
@@ -26,6 +24,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ImageGenerator.Interfaces;
+using ImageGenerator.Classes;
 
 var builder = WebApplication.CreateBuilder(args);
 //После создания builder с помощью него регестрируются сервисы для dependency injection
@@ -149,10 +149,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 //PictureGenerator
-builder.Services.AddTransient<IPictureGenerator, PictureGeneratorMock>();
-builder.Services.Configure<PictureGeneratorMockOptions>(options => {
-	options.ImageStorageDirectory = builder.Environment.ContentRootPath + "\\Generator Images\\imgs\\";
-    options.GeneratedImageDirectory = builder.Environment.ContentRootPath + "\\Generator Images\\Generated Images\\";});
+builder.Services.AddTransient<IImageGenerator, ImageGeneratorMock>();
+builder.Services.Configure<ImageGeneratorMockOptions>(builder.Configuration.GetSection(ImageGeneratorMockOptions.SectionName));
 
 
 //AutoMapper
