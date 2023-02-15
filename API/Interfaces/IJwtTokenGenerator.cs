@@ -13,5 +13,5 @@ public interface IJwtTokenGenerator
     /// <summary>
     /// Генерирует JWT-токен с Email как идентифицирующий пользователя клейм.
     /// </summary>
-    string GenerateToken(string email);
+    string GenerateToken(string email, string userId);
 }

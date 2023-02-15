@@ -21,7 +21,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         this.jwtOptions = jwtOptions;
     }
 
-    public string GenerateToken(string email)
+    public string GenerateToken(string email, string userId)
     {
         //Шифровка ключа, известного только серверу (по нему он определяет валидность пришедшего из запроса токена)
         var signingCredentials = new SigningCredentials(
@@ -33,8 +33,9 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         //записаны в HttpContext.User. Эти клемы никак не связаны и не взаимодействуют с Identity.
         var claims = new Claim[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, email), //Субьект клеймов (пользователь) 
-            new Claim(JwtRegisteredClaimNames.Email, email), //Кастомный клейм, по которому будет искаться пользователь в бд через UserManager
+            new Claim(JwtRegisteredClaimNames.Sub, userId), //Субьект клеймов (пользователь) 
+            new Claim(ClaimTypes.Name, email), //Кастомный клейм, по которому будет искаться пользователь в бд через UserManager
+            //Тип клейма должен быть одинаковым во всех auth схемах, чтобы потом по этому типу можно было достать username
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //GUID токена. Уникальный для каждого токена
         };
 
