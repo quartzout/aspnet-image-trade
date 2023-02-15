@@ -19,15 +19,11 @@ namespace API.Controllers;
 public class JwtAccountController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
-    private IHttpContextAccessor _httpContextAccessor;
-    private IMapper _mapper;
     private IJwtTokenGenerator _jwtTokenGenerator;
 
-    public JwtAccountController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IMapper mapper, IJwtTokenGenerator jwtTokenGenerator)
+    public JwtAccountController(UserManager<User> userManager,  IJwtTokenGenerator jwtTokenGenerator)
     {
         _userManager = userManager;
-        _httpContextAccessor = httpContextAccessor;
-        _mapper = mapper;
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
@@ -53,7 +49,7 @@ public class JwtAccountController : ControllerBase
         }
 
         //При успешной проверке пароля генерируется и возвращается токен, содержащий только email
-        return Ok(new LoginResultGet { Token = _jwtTokenGenerator.GenerateToken(user.Email!) });
+        return Ok(new LoginResultGet { Token = _jwtTokenGenerator.GenerateToken(user.Email!, user.Id) });
         
     }
 
@@ -83,31 +79,7 @@ public class JwtAccountController : ControllerBase
         }
 
         //При успешном сохранении пользователя генерируется и возвращается токен, содержащий только email
-        return Ok(new LoginResultGet() { Token = _jwtTokenGenerator.GenerateToken(user.Email!) });
-
-    }
-
-    /// <summary>
-    /// Возвращает полную информацию о текущем залогиненном пользователе
-    /// </summary>
-    [Authorize]
-    [HttpGet]
-    public async Task<IActionResult> GetCurrentUser()
-    {
-        //Достаем email, который является уникальным юзернеймом, из клеймов httpcontext (клейм отличается от того,
-        //который используется для Cookie-логина
-        string? email = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //Находим по взятому email пользователя
-        User? user = await _userManager.FindByNameAsync(email ?? "");
-        if (user == null)
-        {
-            ModelState.AddModelError("", "Cannot find user");
-            return ValidationProblem();
-        }
-
-        //Маппим пользователя в плоский дто для отправки и возвращаем
-        return Ok(_mapper.Map<User, UserGetDto>(user)); 
+        return Ok(new LoginResultGet() { Token = _jwtTokenGenerator.GenerateToken(user.Email!, user.Id) });
 
     }
 

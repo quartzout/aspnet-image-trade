@@ -19,15 +19,11 @@ namespace API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
-    private IHttpContextAccessor _httpContextAccessor;
-    private IMapper _mapper;
     private readonly SignInManager<User> _signInManager;
 
-    public AccountController(UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IMapper mapper, SignInManager<User> signInManager)
+    public AccountController(UserManager<User> userManager,  SignInManager<User> signInManager)
     {
         _userManager = userManager;
-        _httpContextAccessor = httpContextAccessor;
-        _mapper = mapper;
         _signInManager = signInManager;
     }
 
@@ -107,29 +103,6 @@ public class AccountController : ControllerBase
         }
 
         return LoginFail(result);
-
-    }
-
-    /// <summary>
-    /// Возвращает полную информацию о текущем залогиненном пользователе
-    /// </summary>
-    [Authorize]
-    [HttpGet]
-    public async Task<IActionResult> GetCurrentUser()
-    {
-        //Достаем email, который является уникальным юзернеймом, из клеймов httpcontext
-        string? email = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.Name);
-
-        //Находим по взятому email пользователя
-        User? user = await _userManager.FindByNameAsync(email ?? "");
-        if (user == null)
-        {
-            ModelState.AddModelError("", "Cannot find user");
-            return ValidationProblem();
-        }
-
-        //Маппим пользователя в плоский дто для отправки и возвращаем
-        return Ok(_mapper.Map<User, UserGetDto>(user)); 
 
     }
 
