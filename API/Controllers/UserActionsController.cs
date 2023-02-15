@@ -3,13 +3,13 @@ using API.Models;
 using AutoMapper;
 using DataAccessLibrary.Interfaces;
 using DataAccessLibrary.Models;
+using ImageGenerator.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
 using Users.Identity.Classes;
-using Webapp174.Models.Interfaces;
 using static DataAccessLibrary.Classes.InfoStorage;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
@@ -25,14 +25,14 @@ namespace API.Controllers;
 [Authorize(AuthenticationSchemes = "Identity.Application," + JwtBearerDefaults.AuthenticationScheme)]
 public class UserActionsController : ControllerBase
 {
-    private readonly IPictureGenerator _generator;
+    private readonly IImageGenerator _generator;
     private readonly INeuroImageStorage _storage;
     private readonly IMapper _mapper;
     private readonly ICurrentUserProvider _currentUserProvider;
     private readonly UserManager<User> _userManager;
 
 
-    public UserActionsController(IPictureGenerator generator, INeuroImageStorage storage, IMapper mapper, UserManager<User> userManager, ICurrentUserProvider currentUserProvider) : base()
+    public UserActionsController(IImageGenerator generator, INeuroImageStorage storage, IMapper mapper, UserManager<User> userManager, ICurrentUserProvider currentUserProvider) : base()
     {
         _generator = generator;
         _storage = storage;

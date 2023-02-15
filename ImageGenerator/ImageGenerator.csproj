@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Generator Images\imgs\1.jpg" />
+    <None Remove="Generator Images\imgs\2.jpg" />
+    <None Remove="Generator Images\imgs\3.jpg" />
+    <None Remove="Generator Images\imgs\4.jpg" />
+    <None Remove="Generator Images\imgs\5.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Generator Images\imgs\1.jpg" />
+    <Content Include="Generator Images\imgs\2.jpg" />
+    <Content Include="Generator Images\imgs\3.jpg" />
+    <Content Include="Generator Images\imgs\4.jpg" />
+    <Content Include="Generator Images\imgs\5.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Generator Images\Generated Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+  </ItemGroup>
+
+</Project>

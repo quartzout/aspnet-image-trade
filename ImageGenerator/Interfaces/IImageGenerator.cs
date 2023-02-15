@@ -1,9 +1,9 @@
-﻿namespace Webapp174.Models.Interfaces;
+﻿namespace ImageGenerator.Interfaces;
 
 /// <summary>
 /// Интерфейс, генерирующий изображения. 
 /// </summary>
-public interface IPictureGenerator
+public interface IImageGenerator
 {
 	public string GeneratePicture();
 }

@@ -1,18 +1,18 @@
-﻿using Microsoft.Extensions.Options;
-using Webapp174.Models.Interfaces;
+﻿using ImageGenerator.Interfaces;
+using Microsoft.Extensions.Options;
 
-namespace Webapp174.Models.Mocks;
+namespace ImageGenerator.Classes;
 
 /// <summary>
-/// Мокает <see cref="IPictureGenerator"/>, копируя случайную из восьми имеющихся картинок в отведенную директорию.
+/// Мокает <see cref="IImageGenerator"/>, копируя случайную из восьми имеющихся картинок в отведенную директорию.
 /// Класс настроек задает директорию, где хранятся картинки для выбора и директорию, куда копируются "сгенерированные" изображения
 /// </summary>
-public class PictureGeneratorMock : IPictureGenerator
+public class ImageGeneratorMock : IImageGenerator
 {
 	private const int NumberOfImages = 8;
-	private readonly IOptions<PictureGeneratorMockOptions> _options;
+	private readonly IOptions<ImageGeneratorMockOptions> _options;
 
-	public PictureGeneratorMock(IOptions<PictureGeneratorMockOptions> options)
+	public ImageGeneratorMock(IOptions<ImageGeneratorMockOptions> options)
 	{
 		_options = options;
 	}
@@ -23,7 +23,7 @@ public class PictureGeneratorMock : IPictureGenerator
 		Random rnd = new Random();
 		int imageNumber = rnd.Next(1, NumberOfImages);
 		string filename = imageNumber + ".jpg";
-		string pickedImagePath = _options.Value.ImageStorageDirectory + filename;
+		string pickedImagePath = _options.Value.OriginalImagesDirectory + filename;
 
 		//Скопировать в директорию сгенерированных картинок
 		string generatedImagePath = _options.Value.GeneratedImageDirectory + filename;

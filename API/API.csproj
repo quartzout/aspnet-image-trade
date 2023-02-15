@@ -44,11 +44,6 @@
       <Content Update="appsettings.Development.json">
         <DependentUpon>appsettings.json</DependentUpon>
       </Content>
-      <Content Include="Generator Images\imgs\1.jpg" />
-      <Content Include="Generator Images\imgs\2.jpg" />
-      <Content Include="Generator Images\imgs\3.jpg" />
-      <Content Include="Generator Images\imgs\4.jpg" />
-      <Content Include="Generator Images\imgs\5.jpg" />
     </ItemGroup>
 
     <ItemGroup>
@@ -57,12 +52,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ImageGenerator\ImageGenerator.csproj" />
       <ProjectReference Include="..\Images\Images.csproj" />
       <ProjectReference Include="..\Users\Users.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Generator Images\Generated Images\" />
       <Folder Include="wwwroot\image-storage\" />
     </ItemGroup>
 
