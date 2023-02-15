@@ -14,10 +14,14 @@ public class RegisterModelPOST
     [EmailAddress]
     public string Email { get; set; }
 
-    [DisplayName("Name")]
+    [DisplayName("Display name")]
     [Required]
     [StringLength(maximumLength: 20, ErrorMessage = "Name should be less than 20 characters long")]
     public string DisplayName { get; set; }
+
+    [DisplayName("Description")]
+    [StringLength(maximumLength: 200, ErrorMessage = "Description should be less than 200 characters long")]
+    public string Description { get; set; }
 
     [DisplayName("Password")]
     [Required]
