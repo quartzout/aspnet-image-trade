@@ -5,7 +5,6 @@ using Images.Classes;
 using Images;
 using Images.Classes.Options;
 using System.Linq.Expressions;
-using Users.Models.Classes.AutoMapper;
 using System.Net;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Diagnostics;
@@ -26,6 +25,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ImageGenerator.Interfaces;
 using ImageGenerator.Classes;
+using API.Automapper.AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 //После создания builder с помощью него регестрируются сервисы для dependency injection
