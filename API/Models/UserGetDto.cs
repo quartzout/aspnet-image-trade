@@ -7,4 +7,5 @@ public class UserGetDto
     public string DisplayName { get; set; }
     public string Email { get; set; }
     public int CoinBalance { get; set; }
+    public string Description { get; set; }
 }
