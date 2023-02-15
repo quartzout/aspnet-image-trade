@@ -1,7 +1,7 @@
 ﻿namespace Images.Classes.Options;
 
 
-public class NeuroImageInfoStorageOptions
+public class ImageInfoStorageOptions
 {
     public string SqlDbConnectionString { get; set; } = string.Empty;
 }

@@ -13,12 +13,12 @@ namespace Webapp174;
 
 public class ListOfImages : PageModel
 {
-    private readonly INeuroImageStorage _storage;
+    private readonly IImageStorage _storage;
     private readonly MyHelper _helper;
     private readonly IMapper _mapper;
     private readonly IPictureGenerator _gen;
 
-    public ListOfImages(INeuroImageStorage storage, MyHelper helper, IMapper mapper, IPictureGenerator gen)
+    public ListOfImages(IImageStorage storage, MyHelper helper, IMapper mapper, IPictureGenerator gen)
     {
         _storage = storage;
         _helper = helper;

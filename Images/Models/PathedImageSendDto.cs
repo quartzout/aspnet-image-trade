@@ -5,9 +5,9 @@
 /// <summary>
 /// Модель, отсылаемая на бд
 /// </summary>
-public class PathedNeuroImageSendDto
+public class PathedImageSendDto
 {
-    public PathedNeuroImageSendDto() { }
+    public PathedImageSendDto() { }
 
     public string Filename { get; set; }
 

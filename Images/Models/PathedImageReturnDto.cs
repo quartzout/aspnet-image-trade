@@ -4,9 +4,9 @@
 /// <summary>
 /// Модель, возвращаемая из бд
 /// </summary>
-public class PathedNeuroImageReturnDto
+public class PathedImageReturnDto
 {
-    public PathedNeuroImageReturnDto() { }
+    public PathedImageReturnDto() { }
 
     public string? InfoName { get; set; }
     public string? InfoDescription { get; set; }

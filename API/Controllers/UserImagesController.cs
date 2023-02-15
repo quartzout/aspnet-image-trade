@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Users.Identity.Classes;
-using static Images.Interfaces.INeuroImageStorage;
+using static Images.Interfaces.IImageStorage;
 
 namespace API.Controllers
 {
@@ -25,10 +25,10 @@ namespace API.Controllers
 
 		readonly IMapper _mapper;
 		readonly UserManager<User> _userManager;
-		readonly INeuroImageStorage _imageStore;
+		readonly IImageStorage _imageStore;
         private ICurrentUserProvider _currentUserProvider;
 
-        public UserImagesController(IMapper mapper, UserManager<User> userManager, INeuroImageStorage imageStore, ICurrentUserProvider currentUserProvider)
+        public UserImagesController(IMapper mapper, UserManager<User> userManager, IImageStorage imageStore, ICurrentUserProvider currentUserProvider)
         {
             _mapper = mapper;
             _userManager = userManager;

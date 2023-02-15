@@ -6,9 +6,9 @@ namespace Images.Models;
 /// <summary>
 /// Модель, возвращаемая функциями в DapperImageStore, полностью описывающее изображение, полученное из базы данных
 /// </summary>
-public class NeuroImageResult
+public class ImageResult
 {
-    public NeuroImageInfo Info { get; set; }
+    public ImageInfo Info { get; set; }
     /// <summary>
     /// Id изображения в бд
     /// </summary>
@@ -21,7 +21,7 @@ public class NeuroImageResult
     /// <summary>
     /// Возвращает web-путь к изображению, готового для вставки в html, полученному из полного локального пути к файлу изображения.
     /// Метод определен в модели и именован по формату "Get<property>" для того, чтобы автомаппер мог сам замаппить FullName из
-    /// NeuroImageResult в WebFullName из ImageGetDto
+    /// ImageResult в WebFullName из ImageGetDto
     /// </summary>
     public string GetWebFullName()
     {
@@ -38,7 +38,7 @@ public class NeuroImageResult
     /// <summary>
     /// Возвращает TimespanSegments с временем, прошедшим с генерации файла
     /// Метод определен в модели и именован по формату "Get<property>" для того, чтобы автомаппер мог сам заполнить GeneratedAgoTimespanSegments
-    /// в ImageGetDto и ImageModelGET из NeuroImageResult
+    /// в ImageGetDto и ImageModelGET из ImageResult
     /// </summary>
     public TimespanSegments GetGeneratedAgoTimespanSegments()
     {

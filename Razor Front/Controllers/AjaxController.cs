@@ -19,13 +19,13 @@ namespace RazorPages.Controllers;
 public class AjaxController : ControllerBase
 {
     private readonly IPictureGenerator _generator;
-    private readonly INeuroImageStorage _storage;
+    private readonly IImageStorage _storage;
     private readonly MyHelper _helper;
     private readonly IMapper _mapper;
     private readonly UserManager<User> _userManager;
 
 
-    public AjaxController(IPictureGenerator generator, INeuroImageStorage storage, MyHelper helper, IMapper mapper, UserManager<User> userManager) : base()
+    public AjaxController(IPictureGenerator generator, IImageStorage storage, MyHelper helper, IMapper mapper, UserManager<User> userManager) : base()
     {
         _generator = generator;
         _storage = storage;
@@ -65,7 +65,7 @@ public class AjaxController : ControllerBase
         //Generating file and getting a path to it
         string generatedPicturePath = _generator.GeneratePicture();
 
-        NeuroImageInfo newlyGeneratedInfo = new(
+        ImageInfo newlyGeneratedInfo = new(
             isInGallery: false,
             generationDate: DateTime.Now,
             ownerId: user.Id);
@@ -97,7 +97,7 @@ public class AjaxController : ControllerBase
         }
 
 
-        NeuroImageResult image;
+        ImageResult image;
         try { image = await _storage.GetById(imageInfo.Id); }
         catch (SqlReadException) { return NotFound("Image not found"); }
 
@@ -109,8 +109,8 @@ public class AjaxController : ControllerBase
         if (info.IsInGallery)
             return BadRequest("Specified image is already in gallery");
 
-        //Маппинг из ImageInfoModelPOST в NeuroImageInfo происходит вручную, однако можно вместо этого обьявить мап 
-        //из первой модели в последнюю и как-то настроить его так, чтобы он мог совмещать две NeuroImageInfo в одну
+        //Маппинг из ImageInfoModelPOST в ImageInfo происходит вручную, однако можно вместо этого обьявить мап 
+        //из первой модели в последнюю и как-то настроить его так, чтобы он мог совмещать две ImageInfo в одну
         info.Name = imageInfo.Name;
         info.Description = imageInfo.Description;
         info.IsInGallery = true;

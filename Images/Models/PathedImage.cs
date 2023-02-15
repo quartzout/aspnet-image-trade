@@ -2,20 +2,20 @@
 
 #nullable disable
 /// <summary>
-/// Обертка над <see cref="NeuroImageInfo"/>, хранящая вместе с ним название файла.
+/// Обертка над <see cref="ImageInfo"/>, хранящая вместе с ним название файла.
 /// </summary>
-public class PathedNeuroImage
+public class PathedImage
 {
     //Обьекты создаются вручную, без маппера, поэтому конструктор с аргументами
-    public PathedNeuroImage(string filename, NeuroImageInfo info)
+    public PathedImage(string filename, ImageInfo info)
     {
         Filename = filename;
         Info = info;
     }
 
-    public PathedNeuroImage() { }
+    public PathedImage() { }
 
     public string Filename { get; set; }
-    public NeuroImageInfo Info { get; set; }
+    public ImageInfo Info { get; set; }
 
 }

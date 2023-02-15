@@ -25,13 +25,13 @@ namespace API.Controllers;
 public class UserActionsController : ControllerBase
 {
     private readonly IImageGenerator _generator;
-    private readonly INeuroImageStorage _storage;
+    private readonly IImageStorage _storage;
     private readonly IMapper _mapper;
     private readonly ICurrentUserProvider _currentUserProvider;
     private readonly UserManager<User> _userManager;
 
 
-    public UserActionsController(IImageGenerator generator, INeuroImageStorage storage, IMapper mapper, UserManager<User> userManager, ICurrentUserProvider currentUserProvider) : base()
+    public UserActionsController(IImageGenerator generator, IImageStorage storage, IMapper mapper, UserManager<User> userManager, ICurrentUserProvider currentUserProvider) : base()
     {
         _generator = generator;
         _storage = storage;
@@ -62,16 +62,16 @@ public class UserActionsController : ControllerBase
         user.CoinBalance--;
         await _userManager.UpdateAsync(user);
 
-        //Генерируем файл картинки, сохраняем его с помощью INeuroImageStorage с минимальным количеством информации
+        //Генерируем файл картинки, сохраняем его с помощью IImageStorage с минимальным количеством информации
         string generatedPicturePath = _generator.GeneratePicture();
 
-        NeuroImageInfo newlyGeneratedInfo = new(
+        ImageInfo newlyGeneratedInfo = new(
             isInGallery: false,
             generationDate: DateTime.Now,
             ownerId: user.Id);
         var imageSaveResult = await _storage.StoreCopy(generatedPicturePath, newlyGeneratedInfo, deleteOriginal: true);
 
-        //Маппим вернувшийся из INeuroImageStorage обьект сохраненного изображения в плоский дто и возвращаем
+        //Маппим вернувшийся из IImageStorage обьект сохраненного изображения в плоский дто и возвращаем
         return Ok(_mapper.Map<ImageGetDto>(imageSaveResult));
     }
 
@@ -95,7 +95,7 @@ public class UserActionsController : ControllerBase
         }
 
         // Достаем из бд изображение, которое пользователь редактирует
-        NeuroImageResult image;
+        ImageResult image;
         try { image = await _storage.GetById(newImageInfo.Id); }
         catch (SqlReadException) { return NotFound("Image not found"); }
 
@@ -103,8 +103,8 @@ public class UserActionsController : ControllerBase
         if (user.Id != image.Info.OwnerId)
             return Unauthorized();
 
-        //Маппинг из ImageInfoModelPOST в NeuroImageInfo происходит вручную, однако можно вместо этого обьявить мап 
-        //из первой модели в последнюю и как-то настроить его так, чтобы он мог совмещать две NeuroImageInfo в одну
+        //Маппинг из ImageInfoModelPOST в ImageInfo происходит вручную, однако можно вместо этого обьявить мап 
+        //из первой модели в последнюю и как-то настроить его так, чтобы он мог совмещать две ImageInfo в одну
         image.Info.Name = newImageInfo.Name;
         image.Info.Description = newImageInfo.Description;
         image.Info.IsOnSale = newImageInfo.IsOnSale;

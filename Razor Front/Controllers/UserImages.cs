@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
 using RazorPages.Models.Implementations;
 using Users.Identity.Classes;
-using static Images.Interfaces.INeuroImageStorage;
+using static Images.Interfaces.IImageStorage;
 
 namespace RazorPages.Controllers
 {
@@ -22,9 +22,9 @@ namespace RazorPages.Controllers
 		readonly IMapper _mapper;
 		readonly UserManager<User> _userManager;
 		readonly MyHelper _helper;
-		readonly INeuroImageStorage _imageStore;
+		readonly IImageStorage _imageStore;
 
-		public UserImagesController(IMapper mapper, UserManager<User> userManager, MyHelper helper, INeuroImageStorage imageStore)
+		public UserImagesController(IMapper mapper, UserManager<User> userManager, MyHelper helper, IImageStorage imageStore)
 		{
 			_mapper = mapper;
 			_userManager = userManager;

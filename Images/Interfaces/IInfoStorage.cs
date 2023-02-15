@@ -14,22 +14,22 @@ namespace Images.Interfaces;
 
 /// <summary>
 /// Интерфейс, хранящий информацию о изображениях. Ключами являются числовые id. Все методы возвращают изображения в модели
-/// <see cref="PathedNeuroImageResult"/>.
-/// Post-методы принимают изображение на хранение в модели <see cref="PathedNeuroImage"/>, чтобы вместе с информацией хранить
+/// <see cref="PathedImageResult"/>.
+/// Post-методы принимают изображение на хранение в модели <see cref="PathedImage"/>, чтобы вместе с информацией хранить
 /// название файла изображения.
 /// </summary>
 public interface IInfoStorage
 {
 
-    Task<PathedNeuroImageResult> Get(int id);
+    Task<PathedImageResult> Get(int id);
 
     Task Delete(int id);
 
-    Task<IEnumerable<PathedNeuroImageResult>> GetAllOfUserOfStatus(string userId, ImageStatus type);
+    Task<IEnumerable<PathedImageResult>> GetAllOfUserOfStatus(string userId, ImageStatus type);
 
-    Task<PathedNeuroImageResult> Create(PathedNeuroImage info);
+    Task<PathedImageResult> Create(PathedImage info);
 
-    Task<PathedNeuroImageResult> Replace(int id, PathedNeuroImage image);
+    Task<PathedImageResult> Replace(int id, PathedImage image);
 
     
 

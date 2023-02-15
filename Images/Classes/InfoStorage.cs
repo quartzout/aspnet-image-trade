@@ -42,16 +42,16 @@ public partial class InfoStorage : IInfoStorage
     private readonly IMapper _mapper;
 
 
-    public InfoStorage(IOptions<NeuroImageInfoStorageOptions> options)
+    public InfoStorage(IOptions<ImageInfoStorageOptions> options)
     {
         _options = options;
 
         var config = new MapperConfiguration(
             cfg => {
 
-                //Для отправки в post-методы. Разворачиваем сложный тип PathedNeuroImage в плоский SendDto
-                cfg.CreateMap<NeuroImageInfo, PathedNeuroImageSendDto>();
-                cfg.CreateMap<PathedNeuroImage, PathedNeuroImageSendDto>()
+                //Для отправки в post-методы. Разворачиваем сложный тип PathedImage в плоский SendDto
+                cfg.CreateMap<ImageInfo, PathedImageSendDto>();
+                cfg.CreateMap<PathedImage, PathedImageSendDto>()
                     .IncludeMembers(src => src.Info);
 
                 //в post-методах даппер не биндит результат на модель, так как эти методы не возвращают изображений.
@@ -59,21 +59,21 @@ public partial class InfoStorage : IInfoStorage
                 //к ней полем id сохраненного изображения (поэтому входная модель маппится на модель result, разница в которых
                 // - как раз наличие поля id). Так как этот id мапперу нужно взять извне, а не из оригинальной модели, 
                 //при маппинге в его специальный словарь Items передается id под соотсветствующим ключом.
-                cfg.CreateMap<PathedNeuroImage, PathedNeuroImageResult>()
+                cfg.CreateMap<PathedImage, PathedImageResult>()
                     .ForMember(dest => dest.Id, opts => opts.MapFrom((_, _, _, context) => context.Items["Id"]));
             });
 
         _mapper = config.CreateMapper();
     }
 
-    public IOptions<NeuroImageInfoStorageOptions> _options { get; }
+    public IOptions<ImageInfoStorageOptions> _options { get; }
 
     /// <summary>
     /// Вспомогательный метод, открывающий соединение с бд, 
     /// достающий из бд данные по указанной процедуре и биндящий их на IEnumerable из сложных моделей.
     /// parameters задают аргументы процедуры в виде анонимного обьекта.
     /// </summary>
-    private async Task<IEnumerable<PathedNeuroImageResult>> QueryStoredProcedure(string storedProcedure, object parameters)
+    private async Task<IEnumerable<PathedImageResult>> QueryStoredProcedure(string storedProcedure, object parameters)
     {
         using var connection = new SqlConnection(_options.Value.SqlDbConnectionString);
 
@@ -85,15 +85,15 @@ public partial class InfoStorage : IInfoStorage
         //количество задействованных записей.
 
         //С помощью дополнительных generic аргументов можно заставить функцию заполнять для каждой строчки в
-        //результате по две модели вместо одной (PathedNeuroImageResult, куда запишется id и filename, и NeuroImageInfo,
+        //результате по две модели вместо одной (PathedImageResult, куда запишется id и filename, и ImageInfo,
         //куда запишутся все остальные поля), а с помощью лямбды map функция кладет одну полученную модель внутрь другой и
         //возвращает родительскую. Таким образом можно реализовать биндинг сложных моделей
         //https://github.com/DapperLib/Dapper#multi-mapping
 
         return await connection.QueryAsync<
-            PathedNeuroImageResult,
-            NeuroImageInfo,
-            PathedNeuroImageResult>(    //Третий generic определяет тип возвращаемого из map обьекта.
+            PathedImageResult,
+            ImageInfo,
+            PathedImageResult>(    //Третий generic определяет тип возвращаемого из map обьекта.
                                         //В итоге метод вернет IEnumerable из этого дженерика
             commandType: CommandType.StoredProcedure, //Мы не делаем sql-запрос, а вызываем процедуру
             sql: storedProcedure,       //вместо запроса указываем имя вызываемой процедуры
@@ -122,7 +122,7 @@ public partial class InfoStorage : IInfoStorage
     }
 
 
-    public async Task<PathedNeuroImageResult> Get(int id)
+    public async Task<PathedImageResult> Get(int id)
     {
         var results = await QueryStoredProcedure("dbo.spImageInfos_get", new { id });
 
@@ -133,7 +133,7 @@ public partial class InfoStorage : IInfoStorage
     }
 
 
-    public async Task<IEnumerable<PathedNeuroImageResult>> GetAll()
+    public async Task<IEnumerable<PathedImageResult>> GetAll()
     {
         var results = await QueryStoredProcedure(
         "dbo.spImageInfos_getAll",
@@ -144,7 +144,7 @@ public partial class InfoStorage : IInfoStorage
         
     }
 
-    public async Task<IEnumerable<PathedNeuroImageResult>> GetAllOnSale()
+    public async Task<IEnumerable<PathedImageResult>> GetAllOnSale()
     {
         var results = await QueryStoredProcedure(
         "dbo.spImageInfos_getAllOnSale",
@@ -153,7 +153,7 @@ public partial class InfoStorage : IInfoStorage
         return results;
     }
 
-    public async Task<IEnumerable<PathedNeuroImageResult>> GetAllOfUserOfStatus(string userID, ImageStatus status)
+    public async Task<IEnumerable<PathedImageResult>> GetAllOfUserOfStatus(string userID, ImageStatus status)
     {
         var results = await QueryStoredProcedure(
         $"dbo.spImageInfos_get{status}OfUser", //для каждого статуса в бд предусмотрена отдельная процедура
@@ -173,12 +173,12 @@ public partial class InfoStorage : IInfoStorage
     }
 
 
-    public async Task<PathedNeuroImageResult> Create(PathedNeuroImage image)
+    public async Task<PathedImageResult> Create(PathedImage image)
     {
         //В post-методах Replace и Create необходимо вместе с количеством задействованных строк возвращать id сохраненной
         //записи. Так как ExecuteAsync не может возвращать дополнительные значение, нужно перехватить эти значения другим образом.
         
-        var sendDto = _mapper.Map<PathedNeuroImageSendDto>(image); //плоский обьект, который будет замапплен даппером в sql-запрос
+        var sendDto = _mapper.Map<PathedImageSendDto>(image); //плоский обьект, который будет замапплен даппером в sql-запрос
 
         //Вместо анонимного обьекта с аргументами создаем специальный дапперовский тип DynamicParameters, позволяющий указать
         //вместе с аргументом его тип. Если указать тип как Output, аргумент станет параметром, в который sql-процедура
@@ -194,14 +194,14 @@ public partial class InfoStorage : IInfoStorage
         int newID = parameters.Get<int>("@NewIdentity"); //считываем вывод
 
         //маппим входную модель на выходную, добавляя к ней полученный id, передав его в opt мапперу
-        return _mapper.Map<PathedNeuroImageResult>(image, opt => opt.Items["Id"] = newID);
+        return _mapper.Map<PathedImageResult>(image, opt => opt.Items["Id"] = newID);
 
     }
 
 
-    public async Task<PathedNeuroImageResult> Replace(int id, PathedNeuroImage image)
+    public async Task<PathedImageResult> Replace(int id, PathedImage image)
     {
-        var sendDto = _mapper.Map<PathedNeuroImageSendDto>(image);
+        var sendDto = _mapper.Map<PathedImageSendDto>(image);
 
         var parameters = new DynamicParameters();
         parameters.AddDynamicParams(sendDto);
@@ -213,7 +213,7 @@ public partial class InfoStorage : IInfoStorage
 
         if (rowsAffected < 1) throw new SqlWriteException("rows affected are less than one");
 
-        return _mapper.Map<PathedNeuroImageResult>(image, opt => opt.Items["Id"] = id);
+        return _mapper.Map<PathedImageResult>(image, opt => opt.Items["Id"] = id);
     }
 
 }

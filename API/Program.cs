@@ -37,10 +37,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 //добавление сервисов для хранения изображений из проекта Images
 builder.Services.AddTransient<IInfoStorage, InfoStorage>();
-builder.Services.Configure<NeuroImageInfoStorageOptions>(
+builder.Services.Configure<ImageInfoStorageOptions>(
 	options => options.SqlDbConnectionString = builder.Configuration.GetConnectionString("ImagesSqlDb") ?? "");
 
-builder.Services.AddTransient<INeuroImageStorage, NeuroImageStorage>();
+builder.Services.AddTransient<IImageStorage, ImageStorage>();
 
 builder.Services.AddTransient<IFileStorage, FileStorage>();
 builder.Services.Configure<FileStorageOptions>(

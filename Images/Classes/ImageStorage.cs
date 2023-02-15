@@ -12,7 +12,7 @@ using Images.Classes.Options;
 using System.Xml.Linq;
 using AutoMapper;
 using static System.Net.Mime.MediaTypeNames;
-using static Images.Interfaces.INeuroImageStorage;
+using static Images.Interfaces.IImageStorage;
 using Images.Models;
 using static Images.Interfaces.IInfoStorage;
 using Users.Identity.Classes;
@@ -20,23 +20,23 @@ namespace Images.Classes;
 
 
 /// <summary>
-/// Имплементация <see cref="INeuroImageStorage"/> 
+/// Имплементация <see cref="IImageStorage"/> 
 /// Использует <see cref="IInfoStorage"/> для хранения информации об изображении,
 /// и <see cref="IFileStorage"/> для хранения файлов изображений.
 /// </summary>
-public class NeuroImageStorage : INeuroImageStorage
+public class ImageStorage : IImageStorage
 {
     private readonly IInfoStorage _infoStorage;
     private readonly IFileStorage _fileStorage;
     public readonly IMapper _mapper;
 
-    public NeuroImageStorage(IInfoStorage infoStorage, IFileStorage fileStorage)
+    public ImageStorage(IInfoStorage infoStorage, IFileStorage fileStorage)
     {
         _infoStorage = infoStorage;
         _fileStorage = fileStorage;
 
         var config = new MapperConfiguration(cfg =>
-        cfg.CreateMap<PathedNeuroImageResult, NeuroImageResult>()
+        cfg.CreateMap<PathedImageResult, ImageResult>()
             .ForMember(dest => dest.FullName, opt=> opt.MapFrom(src => _fileStorage.GetPath(src.Filename) ))
         );
 
@@ -44,20 +44,20 @@ public class NeuroImageStorage : INeuroImageStorage
     }
 
 
-    public async Task<NeuroImageResult> StoreCopy(string copyFrom, NeuroImageInfo info, bool deleteOriginalImage = false)
+    public async Task<ImageResult> StoreCopy(string copyFrom, ImageInfo info, bool deleteOriginalImage = false)
     {
 
         //Сохраняем картинку в файловом хранилище, получаем название сохраненного файла
         var fileSaveResult = _fileStorage.StoreCopy(copyFrom, deleteOriginal: deleteOriginalImage);
 
         //Создаем обьект для передачи в инфо хранилище, название файла берем только что полученное
-        PathedNeuroImage storedImage = new(fileSaveResult.newFileName, info);
+        PathedImage storedImage = new(fileSaveResult.newFileName, info);
 
         //Сохраняем в инфо хранилище
         var pathedImageResult = await _infoStorage.Create(storedImage);
 
         //Маппим полученный обьект в результат
-        var result = _mapper.Map<NeuroImageResult>(pathedImageResult);
+        var result = _mapper.Map<ImageResult>(pathedImageResult);
 
         return result;
     }
@@ -67,7 +67,7 @@ public class NeuroImageStorage : INeuroImageStorage
     {
         var pathedImageResult = await _infoStorage.Get(id);
 
-        if (pathedImageResult == null) throw new NeuroImageNotFoundException();
+        if (pathedImageResult == null) throw new ImageNotFoundException();
 
         _fileStorage.Delete(pathedImageResult.Filename);
 
@@ -75,57 +75,57 @@ public class NeuroImageStorage : INeuroImageStorage
     }
 
 
-    public async Task<NeuroImageResult> GetById(int id)
+    public async Task<ImageResult> GetById(int id)
     {
        var pathedImageResult = await _infoStorage.Get(id);
 
-        return _mapper.Map<NeuroImageResult>(pathedImageResult);
+        return _mapper.Map<ImageResult>(pathedImageResult);
     }
 
 
-    /*    public async Task<IEnumerable<NeuroImageResult>> GetAll() {
+    /*    public async Task<IEnumerable<ImageResult>> GetAll() {
             var pathedResults = await _infoStorage.GetAll();
-            return _mapper.Map<IEnumerable<PathedNeuroImageResult>, IEnumerable<NeuroImageResult>>(pathedResults);
+            return _mapper.Map<IEnumerable<PathedImageResult>, IEnumerable<ImageResult>>(pathedResults);
         }
 
     */
     /*
-        public async Task<IEnumerable<NeuroImageResult>> GetAllOnSale()
+        public async Task<IEnumerable<ImageResult>> GetAllOnSale()
         {
             var pathedResults = await _infoStorage.GetAllOnSale();
-            return _mapper.Map<IEnumerable<PathedNeuroImageResult>, IEnumerable<NeuroImageResult>>(pathedResults);
+            return _mapper.Map<IEnumerable<PathedImageResult>, IEnumerable<ImageResult>>(pathedResults);
         }
 
 
-        public async Task<IEnumerable<NeuroImageResult>> GetInGalleryOfUser(string userID)
+        public async Task<IEnumerable<ImageResult>> GetInGalleryOfUser(string userID)
         {
             var pathedResults = await _infoStorage.GetInGalleryOfUser(userID);
-            return _mapper.Map<IEnumerable<PathedNeuroImageResult>, IEnumerable<NeuroImageResult>>(pathedResults);
+            return _mapper.Map<IEnumerable<PathedImageResult>, IEnumerable<ImageResult>>(pathedResults);
         }
 
-        public async Task<IEnumerable<NeuroImageResult>> GetInHeapOfUser(string userID)
+        public async Task<IEnumerable<ImageResult>> GetInHeapOfUser(string userID)
         {
             var pathedResults = await _infoStorage.GetInHeapOfUser(userID);
-            return _mapper.Map<IEnumerable<PathedNeuroImageResult>, IEnumerable<NeuroImageResult>>(pathedResults);
+            return _mapper.Map<IEnumerable<PathedImageResult>, IEnumerable<ImageResult>>(pathedResults);
         }
 
 
-        public async Task<IEnumerable<NeuroImageResult>> GetOnSaleOfUser(string userID)
+        public async Task<IEnumerable<ImageResult>> GetOnSaleOfUser(string userID)
         {
             var pathedResults = await _infoStorage.GetOnSaleOfUser(userID);
-            return _mapper.Map<IEnumerable<PathedNeuroImageResult>, IEnumerable<NeuroImageResult>>(pathedResults);
+            return _mapper.Map<IEnumerable<PathedImageResult>, IEnumerable<ImageResult>>(pathedResults);
         }
     */
 
 
-    public async Task<IEnumerable<NeuroImageResult>> GetAllOfUserOfStatus(string userID, ImageStatus status)
+    public async Task<IEnumerable<ImageResult>> GetAllOfUserOfStatus(string userID, ImageStatus status)
     {
         var pathedResults = await _infoStorage.GetAllOfUserOfStatus(userID, status);
-        return _mapper.Map<IEnumerable<PathedNeuroImageResult>, IEnumerable<NeuroImageResult>>(pathedResults);
+        return _mapper.Map<IEnumerable<PathedImageResult>, IEnumerable<ImageResult>>(pathedResults);
     }
 
 
-    public async Task<NeuroImageResult> UpdateInfo(int idToUpdate, NeuroImageInfo newInfo)
+    public async Task<ImageResult> UpdateInfo(int idToUpdate, ImageInfo newInfo)
     {
         //обновляем информацию, оставляя название файла тем же (чтобы оно указывало на тот же самый файл в файловом хранилище),
         //с файлом ничего не делаем
@@ -133,23 +133,23 @@ public class NeuroImageStorage : INeuroImageStorage
         var oldImageResult = await _infoStorage.Get(idToUpdate);
 
         //новый объект, который заменит старый
-        PathedNeuroImage newStoredImage = new(oldImageResult.Filename, newInfo);
+        PathedImage newStoredImage = new(oldImageResult.Filename, newInfo);
         var pathedResult =  await _infoStorage.Replace(idToUpdate, newStoredImage);
 
-        return _mapper.Map<NeuroImageResult>(pathedResult);
+        return _mapper.Map<ImageResult>(pathedResult);
     }
 
-    public async Task<NeuroImageResult> UpdateFile(int idToUpdate, string copyFrom, bool deleteOriginal = false)
+    public async Task<ImageResult> UpdateFile(int idToUpdate, string copyFrom, bool deleteOriginal = false)
     {
         //обновляем файл в файловом хранилище, получаем новое название и обновляем информацию в инфо хранилище,
         //заменив название файла на новое
         var oldImageResult = await _infoStorage.Get(idToUpdate);
         var fileSaveResult = _fileStorage.Replace(copyFrom, oldImageResult.Filename, deleteOriginal);   
         
-        PathedNeuroImage newStoredImage = new(fileSaveResult.newFileName, oldImageResult.Info);                   
+        PathedImage newStoredImage = new(fileSaveResult.newFileName, oldImageResult.Info);                   
         var pathedResult = await _infoStorage.Replace(idToUpdate, newStoredImage);
 
-        return _mapper.Map<NeuroImageResult>(pathedResult);
+        return _mapper.Map<ImageResult>(pathedResult);
     }
 
 
