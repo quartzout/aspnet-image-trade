@@ -20,7 +20,7 @@ namespace API.Controllers;
 /// <summary>
 /// Контроллер, реализующий возможные действия залогиненного пользователя с изображениями
 /// </summary>
-[Route("api/{controller}/{action}")]
+[Route("api/{controller}/{action}/{imageId=-1}")]
 [ApiController]
 [Authorize(AuthenticationSchemes = "Identity.Application," + JwtBearerDefaults.AuthenticationScheme)]
 public class UserActionsController : ControllerBase
@@ -115,6 +115,41 @@ public class UserActionsController : ControllerBase
         await _storage.UpdateInfo(newImageInfo.Id, image.Info);
 
         return Ok();
+    }
+
+
+    [HttpPost] 
+    public async Task<IActionResult> Buy(int imageId)
+    {
+        var image = await _storage.GetById(imageId);
+        var buyer = await _currentUserProvider.GetCurrentUser();
+
+        if (buyer!.CoinBalance < image.Info.Price)
+        {
+            ModelState.AddModelError("", "User doesnt have enought coins to buy image");
+            return ValidationProblem();
+        }
+
+        if (image.Info.IsOnSale == false) { 
+            //так как isOnSale типа bool?, нельзя просто оставить его в условии, необходимо явно сравнить его с bool
+            ModelState.AddModelError("", "This image couldn't be bought");
+            return ValidationProblem();
+        }
+
+        var seller = await _userManager.FindByIdAsync(image.Info.OwnerId);
+
+        image.Info.OwnerId = buyer!.Id;
+        image.Info.IsOnSale = false;
+        var updatedImage = await _storage.UpdateInfo(image.Id, image.Info);
+
+        buyer.CoinBalance -= (int)image.Info.Price!; //так как Price типа int?, необходимо явно привести его в int
+        await _userManager.UpdateAsync(buyer);
+
+        seller!.CoinBalance += (int)image.Info.Price!;
+        await _userManager.UpdateAsync(seller);
+
+        return Ok();
+
     }
 
 }
