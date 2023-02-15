@@ -25,4 +25,6 @@ public class User : IdentityUser
     public string DisplayName { get; set; }
 
     public int CoinBalance { get; set; }
+
+    public string Description { get; set; } = string.Empty;
 }
