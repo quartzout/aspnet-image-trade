@@ -44,7 +44,7 @@ builder.Services.AddTransient<INeuroImageStorage, NeuroImageStorage>();
 
 builder.Services.AddTransient<IFileStorage, FileStorage>();
 builder.Services.Configure<FileStorageOptions>(
-    options => options.fileStorageAbsolutePath = builder.Environment.ContentRootPath + "wwwroot\\image-storage\\");
+    options => options.fileStorageAbsolutePath = builder.Environment.ContentRootPath + "\\wwwroot\\image-storage\\");
 
 
 //https://stackoverflow.com/questions/52492666/what-is-the-point-of-configuring-defaultscheme-and-defaultchallengescheme-on-asp
@@ -97,6 +97,8 @@ builder.Services.AddSingleton(Options.Create(jwtOptions)); //Нам нужно �
 //может пересоздаваться при новых запросах.
 
 builder.Services.AddTransient<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddTransient<ICurrentUserProvider, CurrentUserProvider>();
+
 
 //Параметры jwt-схемы аутентификации 
 var tokenValidationParameters = new TokenValidationParameters()
@@ -115,8 +117,7 @@ var tokenValidationParameters = new TokenValidationParameters()
 
 //Добавление двух схем аутентификации - Cookie для AccountController и jwt для JwtAccountController.
 builder.Services.AddAuthentication(defaultScheme: CookieAuthenticationDefaults.AuthenticationScheme)
-.AddJwtBearer(options => options.TokenValidationParameters = tokenValidationParameters)
-.AddCookie();
+.AddJwtBearer(options => options.TokenValidationParameters = tokenValidationParameters);
 
 //Настройка cookie-схемы, использующейся Identity как дефолтная SignIn-схема
 builder.Services.ConfigureApplicationCookie(options =>
@@ -150,8 +151,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 //PictureGenerator
 builder.Services.AddTransient<IPictureGenerator, PictureGeneratorMock>();
 builder.Services.Configure<PictureGeneratorMockOptions>(options => {
-	options.ImageStorageDirectory = builder.Environment.ContentRootPath + "Generator Images\\imgs\\";
-    options.GeneratedImageDirectory = builder.Environment.ContentRootPath + "Generator Images\\Generated Images\\";});
+	options.ImageStorageDirectory = builder.Environment.ContentRootPath + "\\Generator Images\\imgs\\";
+    options.GeneratedImageDirectory = builder.Environment.ContentRootPath + "\\Generator Images\\Generated Images\\";});
 
 
 //AutoMapper
