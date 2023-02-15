@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccessLibrary.Interfaces;
+using Images.Interfaces;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using System.Dynamic;
 using Microsoft.Extensions.Options;
-using DataAccessLibrary.Classes.Options;
+using Images.Classes.Options;
 using System.Xml.Linq;
 using AutoMapper;
 using static System.Net.Mime.MediaTypeNames;
-using static DataAccessLibrary.Interfaces.INeuroImageStorage;
-using DataAccessLibrary.Models;
-using static DataAccessLibrary.Interfaces.IInfoStorage;
+using static Images.Interfaces.INeuroImageStorage;
+using Images.Models;
+using static Images.Interfaces.IInfoStorage;
 using Users.Identity.Classes;
-using DapperImageStore.Models;
-
-namespace DataAccessLibrary;
+namespace Images.Classes;
 
 
 /// <summary>

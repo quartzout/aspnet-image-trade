@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+using Images.Interfaces;
+using Images.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
@@ -8,7 +8,7 @@ using RazorPages.Models.Classes.UI;
 using RazorPages.Models.Implementations;
 using Users.Identity.Classes;
 using Webapp174.Models.Interfaces;
-using static DataAccessLibrary.Classes.InfoStorage;
+using static Images.Classes.InfoStorage;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 

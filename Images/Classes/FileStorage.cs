@@ -1,15 +1,15 @@
-﻿using DataAccessLibrary.Classes.Options;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+﻿using Images.Classes.Options;
+using Images.Interfaces;
+using Images.Models;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static DataAccessLibrary.Interfaces.IFileStorage;
+using static Images.Interfaces.IFileStorage;
 
-namespace DataAccessLibrary.Classes
+namespace Images.Classes
 {
     /// <summary>
     /// Имплементация <see cref="IFileStorage"/>, хранящая изображения в файловой системе в директории, указанной в

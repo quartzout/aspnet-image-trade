@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Classes;
-using DataAccessLibrary;
-using DataAccessLibrary.Classes.Options;
+using Images.Interfaces;
+using Images.Classes;
+using Images;
+using Images.Classes.Options;
 using System.Linq.Expressions;
 using Users.Models.Classes.AutoMapper;
 using System.Net;

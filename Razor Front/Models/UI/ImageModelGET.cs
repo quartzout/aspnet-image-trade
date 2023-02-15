@@ -1,4 +1,4 @@
-﻿using DapperImageStore.Models;
+﻿using Images.Models;
 
 namespace RazorPages.Models.Classes.UI;
 

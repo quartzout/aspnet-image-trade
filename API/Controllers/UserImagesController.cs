@@ -1,18 +1,16 @@
 ﻿using API.Interfaces;
 using API.Models;
 using AutoMapper;
-using DapperImageStore.Models;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+using Images.Interfaces;
+using Images.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Mvc.Models;
 using System.ComponentModel.DataAnnotations;
 using Users.Identity.Classes;
-using static DataAccessLibrary.Interfaces.INeuroImageStorage;
+using static Images.Interfaces.INeuroImageStorage;
 
 namespace API.Controllers
 {

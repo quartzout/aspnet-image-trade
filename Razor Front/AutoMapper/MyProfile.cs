@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DataAccessLibrary.Models;
+using Images.Models;
 using Microsoft.Extensions.Configuration;
 using Mvc.Models;
 using RazorPages.Models.Classes.UI;

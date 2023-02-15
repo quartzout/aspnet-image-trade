@@ -1,7 +1,7 @@
 ﻿using System.Net.Mime;
 using AutoMapper;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+using Images.Interfaces;
+using Images.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Mvc.Models;
 using RazorPages.Models.Classes.UI;

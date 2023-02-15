@@ -6,19 +6,19 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccessLibrary.Interfaces;
+using Images.Interfaces;
 using Microsoft.Extensions.Options;
-using DataAccessLibrary.Classes.Options;
+using Images.Classes.Options;
 using static System.Net.Mime.MediaTypeNames;
 using System.Data;
-using static DataAccessLibrary.Interfaces.IInfoStorage;
+using static Images.Interfaces.IInfoStorage;
 using AutoMapper;
-using DataAccessLibrary.Models;
+using Images.Models;
 using Users.Identity.Classes;
 using System.Dynamic;
-using DapperImageStore.Models;
+using Images.Classes;
 
-namespace DataAccessLibrary.Classes;
+namespace Images.Classes;
 
 /// <summary>
 /// Имплементация <see cref="IInfoStorage"/>, хранящая информацию изображений в SQLServer.

@@ -1,11 +1,10 @@
 ﻿using API.Models;
 using AutoMapper;
-using DataAccessLibrary.Models;
+using Images.Models;
 using Microsoft.Extensions.Configuration;
-using Mvc.Models;
 using Users.Identity.Classes;
 
-namespace Users.Models.Classes.AutoMapper;
+namespace API.Automapper.AutoMapper;
 
 public class MyProfile : Profile
 {

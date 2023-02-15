@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Webapp174.Models.Interfaces;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+using Images.Interfaces;
+using Images.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;

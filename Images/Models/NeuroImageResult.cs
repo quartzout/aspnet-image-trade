@@ -1,6 +1,6 @@
-﻿using DapperImageStore.Models;
+﻿using Images.Models;
 
-namespace DataAccessLibrary.Models;
+namespace Images.Models;
 
 #nullable disable
 /// <summary>

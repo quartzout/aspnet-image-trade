@@ -1,6 +1,4 @@
-﻿
-using DapperImageStore.Models;
-using DataAccessLibrary.Models;
+﻿using Images.Models;
 using Users.Identity.Classes;
 using System;
 using System.Collections.Generic;
@@ -9,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace DataAccessLibrary.Interfaces;
+namespace Images.Interfaces;
 
 
 /// <summary>

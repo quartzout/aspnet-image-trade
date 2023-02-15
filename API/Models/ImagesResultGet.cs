@@ -1,4 +1,4 @@
-﻿using Mvc.Models;
+﻿using API.Models;
 
 namespace API.Models
 {

@@ -1,4 +1,4 @@
-﻿namespace DataAccessLibrary.Models;
+﻿namespace Images.Models;
 
 #nullable disable
 /// <summary>

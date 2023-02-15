@@ -1,4 +1,4 @@
-﻿namespace DataAccessLibrary.Classes.Options;
+﻿namespace Images.Classes.Options;
 
 
 public class NeuroImageInfoStorageOptions

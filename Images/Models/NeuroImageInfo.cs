@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace DataAccessLibrary.Models;
+namespace Images.Models;
 
 #nullable disable
 /// <summary>

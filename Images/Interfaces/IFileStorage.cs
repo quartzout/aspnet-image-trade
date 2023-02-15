@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataAccessLibrary.Models;
+using Images.Models;
 
-namespace DataAccessLibrary.Interfaces;
+namespace Images.Interfaces;
 
 /// <summary>
 /// Интерфейс, хранящий файлы изображений. Ключами являются имена файлов (не пути). 

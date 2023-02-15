@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DapperImageStore.Models;
+namespace Images.Models;
 
 /// <summary>
 /// Модель, являющаяся простой разверткой TimeSpan для отправки во фронтенд

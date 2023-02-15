@@ -1,6 +1,7 @@
-﻿using DapperImageStore.Models;
+﻿using API.Models;
+using Images.Models;
 
-namespace Mvc.Models
+namespace API.Models
 {
     /// <summary>
     /// Модель, полностью описывающая изображение. Возвращается из API

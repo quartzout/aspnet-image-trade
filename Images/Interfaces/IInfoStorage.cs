@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
-using static DataAccessLibrary.Interfaces.IInfoStorage;
-using DataAccessLibrary.Models;
+using Images.Models;
 using Users.Identity.Classes;
-using DapperImageStore.Models;
 
-namespace DataAccessLibrary.Interfaces;
+namespace Images.Interfaces;
 
 
 /// <summary>

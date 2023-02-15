@@ -1,16 +1,15 @@
 ﻿using API.Interfaces;
 using API.Models;
 using AutoMapper;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+using Images.Interfaces;
+using Images.Models;
 using ImageGenerator.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Mvc.Models;
 using Users.Identity.Classes;
-using static DataAccessLibrary.Classes.InfoStorage;
+using static Images.Classes.InfoStorage;
 using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 using HttpPostAttribute = Microsoft.AspNetCore.Mvc.HttpPostAttribute;
 

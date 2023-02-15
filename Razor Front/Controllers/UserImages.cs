@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using DapperImageStore.Models;
-using DataAccessLibrary.Interfaces;
-using DataAccessLibrary.Models;
+using Images.Interfaces;
+using Images.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mvc.Models;
 using RazorPages.Models.Implementations;
 using Users.Identity.Classes;
-using static DataAccessLibrary.Interfaces.INeuroImageStorage;
+using static Images.Interfaces.INeuroImageStorage;
 
 namespace RazorPages.Controllers
 {
