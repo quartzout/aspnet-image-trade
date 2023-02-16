@@ -28,7 +28,19 @@
 
 ## API:
 
-Все эндпоинты возвращают объект ValidationError вместе с ошибками 400, в которых указаны проблемы.
+Все эндпоинты возвращают объект ValidationError вместе с ошибками 400, в которых указаны проблемы:
+
+    {
+        "type": "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+        "title": "One or more validation errors occurred.",
+        "status": 400,
+        "traceId": "00-dcf32e9b6b9f4b47a95bea739a52fb19-74d4a123e5cee200-00",
+        "errors": {
+            "": [
+                "Cannot find user"
+            ]
+        }
+    }
 
 - Account - Действия аккаунта с Cookie
   - **POST api/account/login/**
