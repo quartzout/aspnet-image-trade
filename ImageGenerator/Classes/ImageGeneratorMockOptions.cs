@@ -2,16 +2,16 @@
 
 
 #nullable disable
-public class ImageGeneratorMockOptions
+public class PakinImageGeneratorOptions
 {
-    public const string SectionName = "ImageGeneratorMockOptions";
+    public const string SectionName = "PakinImageGeneratorOptions";
 
     /// <summary>
-    /// Путь к папке, в которой хранятся подготовленные изображения, случайное из которых будет копироваться при "генерации"
+    /// С каким шансом в процентах изображения будут генерироваться с аттрибутом "make tileable"
     /// </summary>
-    public string OriginalImagesDirectory { get; set; }
+    public int TileableChangePercent { get; set; }
     /// <summary>
-    /// Путь к папке, куда будут сохраняться "сгенерированные" изображения
+    /// Путь к папке, куда будут сохраняться сгенерированные изображения
     /// </summary>
     public string GeneratedImageDirectory { get; set; }
 }

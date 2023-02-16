@@ -17,7 +17,7 @@ public class ImageGeneratorMock : IImageGenerator
 		_options = options;
 	}
 	
-	public string GeneratePicture()
+	public async Task<string> GeneratePicture()
 	{
 		//Выбрать картинку
 		Random rnd = new Random();

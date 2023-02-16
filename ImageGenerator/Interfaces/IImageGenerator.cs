@@ -5,5 +5,5 @@
 /// </summary>
 public interface IImageGenerator
 {
-	public string GeneratePicture();
+	public Task<string> GeneratePicture();
 }

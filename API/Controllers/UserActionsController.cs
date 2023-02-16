@@ -63,7 +63,7 @@ public class UserActionsController : ControllerBase
         await _userManager.UpdateAsync(user);
 
         //Генерируем файл картинки, сохраняем его с помощью IImageStorage с минимальным количеством информации
-        string generatedPicturePath = _generator.GeneratePicture();
+        string generatedPicturePath = await _generator.GeneratePicture();
 
         ImageInfo newlyGeneratedInfo = new(
             isInGallery: false,
