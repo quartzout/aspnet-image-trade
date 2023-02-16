@@ -51,7 +51,8 @@
   - **POST api/account/register/**
   
         Зарегестрировать пользователя с помощью Cookie
-        В тело запрос принимает string Email, string DisplayName, string Password, string Description, bool rememberMe 
+        В тело запрос принимает string Email, 
+            string DisplayName, string Password, string Description, bool rememberMe 
         
   - **POST api/account/login/**
 
@@ -67,7 +68,8 @@
   - **POST api/jwtaccount/register/**
   
         Зарегестрировать пользователя с помощью Jwt
-        В тело запрос принимает string Email, string DisplayName, string Password, string Description, bool rememberMe 
+        В тело запрос принимает string Email, string DisplayName, string Password, 
+            string Description, bool rememberMe 
         Возвращает string token
         
 - User - информация о пользователе
