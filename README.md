@@ -58,9 +58,17 @@
         В тело запрос принимает string Email, string DisplayName, string Password, string Description, bool rememberMe 
         Возвращает string token
         
-- User
+- User - информация о пользователе
 
-  Возвращаемый обьект формата:
+  Формат пользователя:
+  
+        {
+          "id": "f167435d-4465-4076-897e-6f9411487b28",
+          "displayName": "name",
+          "email": "email@gmail.com",
+          "coinBalance": 21,
+          "description": "desc"
+        }
       
 
   - **GET api/user/current/** 
@@ -75,6 +83,7 @@
         Возвращает string Id, string displayName, string email, string description, int coinBalance
         
 - UserImages - Изоюражения пользователя
+  
   Формат изображения:
   
       {
