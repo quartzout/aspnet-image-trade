@@ -132,25 +132,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 
-//Добавляет схему для логина с гуглом. Никак не связан с Identity. CallbackPath по дефолту - /signIn-google, и если такой страницы
-//не существует, этот middleware будет сам обрабатывать возвращенный с гугла редирект, содержащий информацию пользователя,
-//и персистить эту информацию в SignInScheme (или в ту, которая установлена по дефолту). Из-за этого, когда используются middleware 
-//внешнего логина без Identity, с ним вместе еще добавляется схема, поддерживающую signIn (куки). Однако для того чтобы использовать
-//екстерные логины вместе с Identity, необходимо создать страницу по адресу CallbackPath и прописать в ней signin или создание нового
-//пользователя а потом signin с помощью userManager и signInManager. Это нужно для того, чтобы пользователь с помощью внешнего
-//провайдера логинился в своего пользователя Identity, а не в рандомную куки-сессию с сохраненными там клеймами из гугла,
-//как произошло бы если бы страницы под CallbackPath не было бы.
-/*builder.Services.AddAuthentication().AddGoogle(opts => {
-    opts.ClientId = "712280448300-tolfe38v9lk8uab5vi9qeddpuk3ua1ij.apps.googleusercontent.com";
-    opts.ClientSecret = "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";
-    opts.CallbackPath = "/Identity/Login/";
-});*/
-
-
-
 //PictureGenerator
-builder.Services.AddTransient<IImageGenerator, ImageGeneratorMock>();
-builder.Services.Configure<ImageGeneratorMockOptions>(builder.Configuration.GetSection(ImageGeneratorMockOptions.SectionName));
+//Так как регестрируется как сервис созданный в рантайме обьект, его опции нужно зарезолвить ему прямо тут, из за чего
+//приходится тут же создать обьект опций и забиндить его.
+var options = new PakinImageGeneratorOptions();
+builder.Configuration.Bind(builder.Configuration.GetSection(PakinImageGeneratorOptions.SectionName));
+builder.Services.AddSingleton<IImageGenerator>(new PakinImageGenerator(Options.Create(options)));
+
 
 
 //AutoMapper
