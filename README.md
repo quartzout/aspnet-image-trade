@@ -19,10 +19,10 @@
 
 - **[Users](https://github.com/quartzout/image-trade-api/tree/master/Users)** - Предоставляет доступ к пользователям и серсивам авторизации с помощью Identity c использованием Entity Framework как ORM.
 
-- **[ImageGenerator](https://github.com/quartzout/image-trade-api/tree/master/ImageGenerator)** - Предоставляет доступ к [IImageGenerator](https://github.com/quartzout/image-trade-api/tree/master/Images/Interfaces/IImageGenerator.cs), который позволяет генерировать случайные алгоритмические изображения.
+- **[ImageGenerator](https://github.com/quartzout/image-trade-api/tree/master/ImageGenerator)** - Предоставляет доступ к [IImageGenerator](https://github.com/quartzout/image-trade-api/tree/master/ImageGenerator/Interfaces/IImageGenerator.cs), который позволяет генерировать случайные алгоритмические изображения.
 Текущая реализация с помощью Selenium генерирует картинку на [сайте Скотта Пэкина](https://www.pakin.org/random-art/) и сохраняет ее в файлы.
 
-- **[Razor Front](https://github.com/quartzout/image-trade-api/tree/master/Razor)** - Незаконченный фронт для API на Razor Pages, котоый я перестал делать, так
+- **[Razor Front](https://github.com/quartzout/image-trade-api/tree/master/Razor%20Front)** - Незаконченный фронт для API на Razor Pages, котоый я перестал делать, так
 как посчитал, что перейти на отдельный React фронт будет удобнее.  
 
 
@@ -87,14 +87,14 @@
   
         *требуется авторизация*
         Вернуть информацию о текущем залогиненном пользователе
-        Возвращает string Id, string displayName, string email, string description, int coinBalance
+        Возвращает пользователя
     
   - **GET api/user/find/<email>/**
   
         Вернуть информацию о пользователе под почтой <email>
-        Возвращает string Id, string displayName, string email, string description, int coinBalance
+        Возвращает пользователя
         
-- UserImages - Изоюражения пользователя
+- UserImages - Изображения пользователя
   
   Формат изображения:
   
